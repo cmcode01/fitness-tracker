@@ -3,6 +3,7 @@ import React from 'react';
 interface Props {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onSignOut: () => void;
 }
 
 const NAV_ITEMS = [
@@ -13,7 +14,7 @@ const NAV_ITEMS = [
   { id: 'progress', label: 'Progress', icon: '📊' },
 ];
 
-const Navigation: React.FC<Props> = ({ activeTab, setActiveTab }) => (
+const Navigation: React.FC<Props> = ({ activeTab, setActiveTab, onSignOut }) => (
   <>
     <nav className="top-nav">
       <div className="nav-brand">
@@ -32,6 +33,9 @@ const Navigation: React.FC<Props> = ({ activeTab, setActiveTab }) => (
           </button>
         ))}
       </div>
+      <button className="nav-signout" onClick={onSignOut} title="Sign out">
+        Sign out
+      </button>
     </nav>
     <nav className="bottom-nav">
       {NAV_ITEMS.map(item => (
