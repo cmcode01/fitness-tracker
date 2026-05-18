@@ -248,8 +248,8 @@ export const getTodayWorkout = (phase: number, dayOfWeek: number) => workoutDays
 export const getExerciseById = (id: string) => exercises.find(e => e.id === id);
 
 export const phaseInfo = {
-  1: { name: 'Foundation', weeks: '1–6', focus: 'Joint stability, mobility, and building exercise habits', intensity: 'Low', color: '#10B981' },
+  1: { name: 'Foundation', weeks: '1–6', focus: 'Joint stability, mobility, and building exercise habits', intensity: 'Low', color: '#3CAE63' },
   2: { name: 'Strength Building', weeks: '7–14', focus: 'Progressive strength, increased cardio, walking outdoors', intensity: 'Moderate', color: '#3B82F6' },
-  3: { name: 'Progressive Overload', weeks: '15–22', focus: 'Heavier training, HIIT cardio, hourglass sculpting, hiking prep', intensity: 'Moderate-High', color: '#8B5CF6' },
-  4: { name: 'Performance', weeks: '23–30+', focus: 'Run-walk intervals, long hikes, peak body composition', intensity: 'High', color: '#EC4899' },
+  3: { name: 'Progressive Overload', weeks: '15–22', focus: 'Heavier training, HIIT cardio, hourglass sculpting, hiking prep', intensity: 'Moderate-High', color: '#0E0E55' },
+  4: { name: 'Performance', weeks: '23–30+', focus: 'Run-walk intervals, long hikes, peak body composition', intensity: 'High', color: '#2D2D7F' },
 };

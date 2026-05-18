@@ -146,8 +146,8 @@ const Progress: React.FC = () => {
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                   <YAxis domain={['auto', 'auto']} tick={{ fontSize: 11 }} />
                   <Tooltip />
-                  <ReferenceLine y={USER_PROFILE.targetWeight} stroke="#10B981" strokeDasharray="6 3" label={{ value: 'Goal', position: 'right', fontSize: 11, fill: '#10B981' }} />
-                  <Line type="monotone" dataKey="weight" stroke="#8B5CF6" strokeWidth={2} dot={{ r: 4 }} name="Weight (lbs)" />
+                  <ReferenceLine y={USER_PROFILE.targetWeight} stroke="#3CAE63" strokeDasharray="6 3" label={{ value: 'Goal', position: 'right', fontSize: 11, fill: '#3CAE63' }} />
+                  <Line type="monotone" dataKey="weight" stroke="#0E0E55" strokeWidth={2} dot={{ r: 4 }} name="Weight (lbs)" />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -167,8 +167,8 @@ const Progress: React.FC = () => {
                   <YAxis tick={{ fontSize: 11 }} unit='"' />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="waist" stroke="#EC4899" strokeWidth={2} dot={{ r: 3 }} name="Waist" connectNulls />
-                  <Line type="monotone" dataKey="hips" stroke="#8B5CF6" strokeWidth={2} dot={{ r: 3 }} name="Hips" connectNulls />
+                  <Line type="monotone" dataKey="waist" stroke="#0E0E55" strokeWidth={2} dot={{ r: 3 }} name="Waist" connectNulls />
+                  <Line type="monotone" dataKey="hips" stroke="#3CAE63" strokeWidth={2} dot={{ r: 3 }} name="Hips" connectNulls />
                   <Line type="monotone" dataKey="chest" stroke="#3B82F6" strokeWidth={2} dot={{ r: 3 }} name="Chest" connectNulls />
                 </LineChart>
               </ResponsiveContainer>
@@ -191,8 +191,8 @@ const Progress: React.FC = () => {
                   <Tooltip />
                   <Legend />
                   <ReferenceLine yAxisId="cal" y={1450} stroke="#F59E0B" strokeDasharray="4 2" label={{ value: 'Cal target', position: 'right', fontSize: 10, fill: '#F59E0B' }} />
-                  <Bar yAxisId="cal" dataKey="calories" fill="#8B5CF6" name="Calories" radius={[3, 3, 0, 0]} />
-                  <Bar yAxisId="prot" dataKey="protein" fill="#10B981" name="Protein (g)" radius={[3, 3, 0, 0]} />
+                  <Bar yAxisId="cal" dataKey="calories" fill="#0E0E55" name="Calories" radius={[3, 3, 0, 0]} />
+                  <Bar yAxisId="prot" dataKey="protein" fill="#3CAE63" name="Protein (g)" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -211,8 +211,8 @@ const Progress: React.FC = () => {
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                   <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                   <Tooltip />
-                  <ReferenceLine y={4} stroke="#10B981" strokeDasharray="4 2" label={{ value: 'Target 4/wk', position: 'right', fontSize: 10, fill: '#10B981' }} />
-                  <Bar dataKey="workouts" fill="#EC4899" name="Workouts" radius={[3, 3, 0, 0]} />
+                  <ReferenceLine y={4} stroke="#3CAE63" strokeDasharray="4 2" label={{ value: 'Target 4/wk', position: 'right', fontSize: 10, fill: '#3CAE63' }} />
+                  <Bar dataKey="workouts" fill="#0E0E55" name="Workouts" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}

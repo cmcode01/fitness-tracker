@@ -9,7 +9,7 @@ type Exercise = typeof exercises[0];
 
 const typeIcon = (type: string) => ({ upper: '💪', lower: '🦵', cardio: '🚴', full_body: '⚡', yoga: '🧘', rest: '😴' })[type] ?? '🏋️';
 const difficultyLabel = (d: 1 | 2 | 3) => ['Beginner', 'Intermediate', 'Advanced'][d - 1];
-const difficultyColor = (d: 1 | 2 | 3) => ['#10B981', '#F59E0B', '#EF4444'][d - 1];
+const difficultyColor = (d: 1 | 2 | 3) => ['#3CAE63', '#F59E0B', '#CD1C18'][d - 1];
 
 const WorkoutPlan: React.FC = () => {
   const { state, dispatch } = useApp();

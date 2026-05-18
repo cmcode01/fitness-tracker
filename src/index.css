@@ -1,24 +1,24 @@
 /* ============================================================
    FITLIFE — Design System
-   Purple / Pink / Teal palette, mobile-first, responsive
+   Navy #0E0E55 · Positive #3CAE63 · Negative #CD1C18 · Neutrals
    ============================================================ */
 
 /* ---------- Reset & Base ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --purple: #8B5CF6;
-  --purple-light: #EDE9FE;
-  --purple-dark: #6D28D9;
-  --pink: #EC4899;
-  --pink-light: #FCE7F3;
-  --teal: #10B981;
-  --teal-light: #D1FAE5;
+  --purple: #0E0E55;
+  --purple-light: #EAEAF5;
+  --purple-dark: #07073D;
+  --pink: #2D2D7F;
+  --pink-light: #EAEAF5;
+  --teal: #3CAE63;
+  --teal-light: #E8F7EE;
   --blue: #3B82F6;
   --blue-light: #DBEAFE;
   --yellow: #F59E0B;
-  --red: #EF4444;
-  --red-light: #FEE2E2;
+  --red: #CD1C18;
+  --red-light: #FDEAEA;
   --gray-50: #F9FAFB;
   --gray-100: #F3F4F6;
   --gray-200: #E5E7EB;
@@ -157,14 +157,14 @@ ul, ol { list-style: none; }
 
 /* ---------- Buttons ---------- */
 .btn-primary {
-  background: linear-gradient(135deg, var(--purple), var(--pink));
+  background: linear-gradient(135deg, #0E0E55, #2D2D7F);
   color: white;
   padding: 10px 20px;
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 14px;
   transition: opacity .15s, transform .1s;
-  box-shadow: 0 2px 8px rgba(139,92,246,.3);
+  box-shadow: 0 2px 8px rgba(14,14,85,.3);
 }
 .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
 .btn-primary:active { transform: translateY(0); }
@@ -842,6 +842,122 @@ ul, ol { list-style: none; }
 .nav-signout:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
 
 @media (max-width: 767px) { .nav-signout { display: none; } }
+
+/* ---------- Today Dashboard ---------- */
+.today-header { margin-bottom: 20px; }
+.today-header h1 { font-size: 24px; font-weight: 800; color: var(--gray-900); letter-spacing: -.5px; }
+
+/* Macro progress bars */
+.today-macros-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 16px 20px;
+}
+.tmb-item { display: flex; flex-direction: column; gap: 4px; }
+.tmb-val { font-size: 18px; font-weight: 800; color: var(--gray-800); }
+.tmb-bar-wrap { height: 6px; background: var(--gray-200); border-radius: 99px; overflow: hidden; }
+.tmb-bar { height: 100%; border-radius: 99px; transition: width .4s ease; }
+.tmb-label { font-size: 11px; color: var(--gray-400); }
+
+/* Workout today */
+.workout-today-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.workout-today-name { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+.workout-today-desc { font-size: 13px; color: var(--gray-600); margin-bottom: 10px; }
+
+.today-exercises { margin-top: 12px; }
+.today-exercises-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-400); margin-bottom: 8px; }
+.ex-chevron { font-size: 10px; color: var(--gray-400); flex-shrink: 0; }
+
+.log-workout-btn { margin-top: 14px; width: 100%; }
+
+.log-workout-inline {
+  margin-top: 14px;
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+.lwi-row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; }
+@media (max-width: 480px) { .lwi-row { grid-template-columns: 1fr; } }
+.lwi-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+
+.logged-badge {
+  font-size: 12px; font-weight: 700;
+  color: var(--teal);
+  background: var(--teal-light);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+.already-logged-note {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+}
+
+/* Meal slots */
+.today-meal-slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px; }
+@media (min-width: 640px) { .today-meal-slots { grid-template-columns: repeat(4, 1fr); } }
+
+.meal-slot {
+  background: var(--gray-50);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color .15s;
+}
+.meal-slot.meal-logged { border-color: var(--teal); background: var(--teal-light); }
+.meal-slot.empty-slot { opacity: .5; }
+
+.meal-slot-top { display: flex; align-items: center; gap: 6px; }
+.meal-slot-icon { font-size: 18px; }
+.meal-slot-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-500); flex: 1; }
+.meal-logged-chip { font-size: 10px; font-weight: 700; color: var(--teal); background: white; padding: 2px 6px; border-radius: 99px; }
+
+.meal-slot-name { font-size: 13px; font-weight: 700; color: var(--gray-800); line-height: 1.3; }
+.meal-slot-meta { font-size: 11px; color: var(--gray-500); }
+.meal-slot-empty { font-size: 12px; color: var(--gray-400); }
+
+.meal-slot-controls { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.portion-row { display: flex; gap: 3px; }
+
+.btn-log-meal {
+  width: 100%;
+  padding: 7px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--purple);
+  color: white;
+  transition: opacity .15s;
+}
+.btn-log-meal:hover { opacity: .85; }
+.meal-slot.meal-logged .btn-log-meal { background: var(--gray-400); }
+
+.plan-totals { font-size: 13px; color: var(--gray-500); padding-top: 8px; border-top: 1px solid var(--gray-100); }
+
+/* Water tracker */
+.water-glasses { display: flex; gap: 8px; margin: 12px 0 6px; flex-wrap: wrap; }
+.water-glass {
+  font-size: 28px;
+  opacity: .2;
+  transition: opacity .15s, transform .1s;
+  border-radius: 8px;
+  padding: 4px;
+}
+.water-glass.filled { opacity: 1; }
+.water-glass:hover { transform: scale(1.15); }
+.water-hint { font-size: 11px; color: var(--gray-400); }
+
+/* Quick weight */
+.quick-weight-row { display: flex; gap: 10px; align-items: flex-end; }
+.quick-weight-input { max-width: 200px; }
+.quick-weight-sub { font-size: 12px; color: var(--gray-400); margin-top: 6px; }
 
 /* ---------- Loading screen ---------- */
 .loading-screen {
