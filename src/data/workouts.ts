@@ -1,0 +1,255 @@
+import { Exercise, WorkoutDay } from '../types';
+
+export const exercises: Exercise[] = [
+  // ── UPPER BODY ──────────────────────────────────────────────────────────────
+  {
+    id: 'e01', name: 'Resistance Band Rows', category: 'upper', sets: 3, reps: '12–15',
+    equipment: ['resistance band'],
+    instructions: 'Anchor band at chest height. Hold with both hands, step back to create tension. Pull elbows back, squeezing shoulder blades together. Return slowly.',
+    aclModification: 'Perform seated or standing — no knee stress.',
+    targetMuscles: ['upper back', 'rear deltoids', 'biceps'], difficulty: 1,
+  },
+  {
+    id: 'e02', name: 'Dumbbell Shoulder Press', category: 'upper', sets: 3, reps: '10–12',
+    equipment: ['dumbbells'],
+    instructions: 'Seated or standing. Hold dumbbells at shoulder height, elbows bent. Press straight overhead until arms are extended, then lower slowly.',
+    aclModification: 'Perform seated to reduce knee load.',
+    targetMuscles: ['deltoids', 'triceps', 'upper trapezius'], difficulty: 2,
+  },
+  {
+    id: 'e03', name: 'Lateral Raises', category: 'upper', sets: 3, reps: '12–15',
+    equipment: ['dumbbells'],
+    instructions: 'Hold light dumbbells at sides. Raise arms out to sides to shoulder height, slight bend in elbows. Lower slowly over 3 counts.',
+    aclModification: 'No knee involvement — safe as-is.',
+    targetMuscles: ['medial deltoids', 'upper trapezius'], difficulty: 1,
+  },
+  {
+    id: 'e04', name: 'Bicep Curls', category: 'upper', sets: 3, reps: '12–15',
+    equipment: ['dumbbells'],
+    instructions: 'Stand or sit with dumbbells, palms forward. Curl weight toward shoulders, squeeze at top, lower slowly.',
+    aclModification: 'Perform seated if standing causes knee discomfort.',
+    targetMuscles: ['biceps'], difficulty: 1,
+  },
+  {
+    id: 'e05', name: 'Tricep Overhead Extension', category: 'upper', sets: 3, reps: '12–15',
+    equipment: ['dumbbell'],
+    instructions: 'Hold one dumbbell overhead with both hands. Lower behind head by bending elbows, keeping upper arms close to ears. Press back up.',
+    aclModification: 'Perform seated — zero knee stress.',
+    targetMuscles: ['triceps'], difficulty: 1,
+  },
+  {
+    id: 'e06', name: 'Wall Push-Ups (Progression to Floor)', category: 'upper', sets: 3, reps: '10–15',
+    equipment: ['wall'],
+    instructions: 'Phase 1–2: hands on wall, lean in, push off wall. Phase 3–4: progress to incline then full floor push-ups.',
+    aclModification: 'No knee involvement when standing. For floor version, knees on soft mat if needed.',
+    targetMuscles: ['chest', 'triceps', 'front deltoids'], difficulty: 1,
+  },
+  {
+    id: 'e07', name: 'Dumbbell Chest Press (Floor)', category: 'upper', sets: 3, reps: '10–12',
+    equipment: ['dumbbells', 'yoga mat'],
+    instructions: 'Lie on back on floor, knees bent, feet flat. Press dumbbells from chest to fully extended, then lower slowly.',
+    aclModification: 'Floor press avoids bench — knees in comfortable position.',
+    targetMuscles: ['pectorals', 'triceps', 'anterior deltoid'], difficulty: 2,
+  },
+  {
+    id: 'e08', name: 'Bent-Over Dumbbell Rows', category: 'upper', sets: 3, reps: '10–12',
+    equipment: ['dumbbells'],
+    instructions: 'Hinge at hips, spine neutral, soft bend in knees. Hold dumbbell, pull elbow toward hip. Alternate arms.',
+    aclModification: 'Use a chair or table for support; avoid deep knee bend.',
+    targetMuscles: ['lats', 'rhomboids', 'biceps'], difficulty: 2,
+  },
+  // ── LOWER BODY (ACL-SAFE) ───────────────────────────────────────────────────
+  {
+    id: 'e09', name: 'Glute Bridges', category: 'lower', sets: 3, reps: '15–20',
+    equipment: ['yoga mat'],
+    instructions: 'Lie on back, knees bent, feet flat. Squeeze glutes and lift hips until body forms straight line. Hold 2 sec, lower slowly. This is your cornerstone exercise.',
+    aclModification: 'Ideal for ACL rehab — minimal knee shear, max glute activation.',
+    targetMuscles: ['glutes', 'hamstrings', 'lower back'], difficulty: 1,
+  },
+  {
+    id: 'e10', name: 'Single-Leg Glute Bridges', category: 'lower', sets: 3, reps: '12 each leg',
+    equipment: ['yoga mat'],
+    instructions: 'Same as glute bridge, but extend one leg straight. Drive through the planted heel. Progress by adding a weight on hip.',
+    aclModification: 'Increases glute demand without excessive knee torque. Start bilaterally first.',
+    targetMuscles: ['glutes', 'hamstrings', 'core'], difficulty: 2,
+  },
+  {
+    id: 'e11', name: 'Clamshells with Band', category: 'lower', sets: 3, reps: '15–20 each side',
+    equipment: ['resistance band', 'yoga mat'],
+    instructions: 'Lie on side, hips stacked, knees bent, band above knees. Keep feet together and rotate top knee open like a clam. Lower slowly.',
+    aclModification: 'Excellent hip abductor strengthener — critical for knee stability and ACL protection.',
+    targetMuscles: ['gluteus medius', 'hip abductors'], difficulty: 1,
+  },
+  {
+    id: 'e12', name: 'Lateral Band Walks', category: 'lower', sets: 3, reps: '15 steps each direction',
+    equipment: ['resistance band'],
+    instructions: 'Place band around ankles or just above knees. Slight squat position. Step sideways maintaining band tension. Keep toes forward.',
+    aclModification: 'Keep bend shallow (20–30°). Essential for hip stability which reduces knee stress.',
+    targetMuscles: ['gluteus medius', 'hip abductors', 'quads'], difficulty: 1,
+  },
+  {
+    id: 'e13', name: 'Step-Ups (Low Step)', category: 'lower', sets: 3, reps: '10–12 each leg',
+    equipment: ['step (6–8 inches) or stair'],
+    instructions: 'Place one foot on low step. Push through that heel to step up. Step down slowly. Do not push off back leg. Progress step height over months.',
+    aclModification: 'Start with 6-inch step. Keep knee tracking over toes. Do NOT go above 10 inches until Phase 3.',
+    targetMuscles: ['quads', 'glutes', 'calves'], difficulty: 2,
+  },
+  {
+    id: 'e14', name: 'Terminal Knee Extensions (TKE)', category: 'lower', sets: 3, reps: '20 each leg',
+    equipment: ['resistance band'],
+    instructions: 'Anchor band behind knee at the bend. Stand with slight flex. Straighten knee against band resistance. Targets the quad at end range.',
+    aclModification: 'Specifically designed for ACL rehab. One of the best ACL-strengthening exercises available.',
+    targetMuscles: ['quadriceps (VMO)', 'knee stabilizers'], difficulty: 1,
+  },
+  {
+    id: 'e15', name: 'Standing Hip Abduction with Band', category: 'lower', sets: 3, reps: '15–20 each side',
+    equipment: ['resistance band', 'wall for balance'],
+    instructions: 'Band around ankles. Stand on one leg (hold wall). Raise other leg out to side as high as comfortable, keeping pelvis level. Lower slowly.',
+    aclModification: 'Ensure standing knee has good support, no locking out.',
+    targetMuscles: ['gluteus medius', 'outer thigh'], difficulty: 1,
+  },
+  {
+    id: 'e16', name: 'Seated Leg Extensions (Band)', category: 'lower', sets: 3, reps: '15 each leg',
+    equipment: ['resistance band', 'chair'],
+    instructions: 'Sit in chair with band around ankle, anchored to chair leg. Straighten knee slowly against resistance, hold 2 sec, lower.',
+    aclModification: 'Control speed carefully. Stop if you feel anterior knee pain. Great for quad strengthening with low risk.',
+    targetMuscles: ['quadriceps'], difficulty: 1,
+  },
+  {
+    id: 'e17', name: 'Standing Calf Raises', category: 'lower', sets: 3, reps: '20–25',
+    equipment: ['wall for balance'],
+    instructions: 'Stand near wall. Rise onto toes, hold 2 sec, lower. Progress to single-leg, then add weight.',
+    aclModification: 'No knee stress. Calf strength helps absorb ground impact and protects knees during walking and hiking.',
+    targetMuscles: ['gastrocnemius', 'soleus'], difficulty: 1,
+  },
+  // ── CORE ────────────────────────────────────────────────────────────────────
+  {
+    id: 'e18', name: 'Dead Bug', category: 'core', sets: 3, reps: '8–10 each side',
+    equipment: ['yoga mat'],
+    instructions: 'Lie on back, arms extended to ceiling, knees at 90°. Slowly lower opposite arm and leg to just above floor, exhale and brace core. Return and switch.',
+    aclModification: 'Pure core — no knee stress. Prioritize this for spine stability.',
+    targetMuscles: ['transverse abdominis', 'lower back', 'hip flexors'], difficulty: 2,
+  },
+  {
+    id: 'e19', name: 'Bird Dog', category: 'core', sets: 3, reps: '10 each side',
+    equipment: ['yoga mat'],
+    instructions: 'On hands and knees. Extend opposite arm and leg straight out. Hold 3 sec, return slowly. Keep hips perfectly level.',
+    aclModification: 'Minimal knee loading in this position. Use a padded mat.',
+    targetMuscles: ['glutes', 'lower back', 'core stabilizers'], difficulty: 1,
+  },
+  {
+    id: 'e20', name: 'Plank (Build from 20s)', category: 'core', sets: 3, duration: '20–60 seconds',
+    equipment: ['yoga mat'],
+    instructions: 'Forearms on floor, body in straight line from head to heels. Brace abs, squeeze glutes. Start at 20 seconds. Add 5 seconds each week.',
+    aclModification: 'Forearm plank is fine. Avoid putting body weight through bent knees.',
+    targetMuscles: ['entire core', 'shoulders', 'glutes'], difficulty: 2,
+  },
+  {
+    id: 'e21', name: 'Side Plank', category: 'core', sets: 3, duration: '20–40 seconds each side',
+    equipment: ['yoga mat'],
+    instructions: 'Lie on side, forearm under shoulder. Lift hips to form straight line. Engage obliques. Modified version: keep knees on floor.',
+    aclModification: 'No direct knee stress. Modified (knees down) version avoids all knee load.',
+    targetMuscles: ['obliques', 'hip abductors', 'shoulder stabilizers'], difficulty: 2,
+  },
+  {
+    id: 'e22', name: 'Russian Twists (Seated)', category: 'core', sets: 3, reps: '20 total (10 each side)',
+    equipment: ['yoga mat'],
+    instructions: 'Sit with knees bent at 90°, lean back slightly, hands clasped. Rotate torso side to side touching floor. Add light dumbbell in Phase 3.',
+    aclModification: 'Keep feet flat on floor rather than elevated.',
+    targetMuscles: ['obliques', 'rectus abdominis'], difficulty: 2,
+  },
+  {
+    id: 'e23', name: 'Pelvic Tilts', category: 'core', sets: 2, reps: '15–20',
+    equipment: ['yoga mat'],
+    instructions: 'Lie on back, knees bent. Gently flatten lower back into floor by tightening abs. Hold 5 sec, release. Subtle but foundational.',
+    aclModification: 'Perfect ACL-safe exercise. Also helps with lower back pain.',
+    targetMuscles: ['transverse abdominis', 'lower back'], difficulty: 1,
+  },
+  // ── CARDIO & FLEXIBILITY ────────────────────────────────────────────────────
+  {
+    id: 'e24', name: 'Stationary Bike or Elliptical', category: 'cardio',
+    duration: 'Phase 1: 20min | Phase 2: 30min | Phase 3: 40min | Phase 4: 45min',
+    equipment: ['stationary bike / elliptical'],
+    instructions: 'Maintain moderate pace (RPE 5–6 out of 10). Resistance low-medium. Elliptical: use handrails and keep upright posture.',
+    aclModification: 'The gold standard for ACL-safe cardio. Minimal joint shear. Preferred over treadmill in Phase 1–2.',
+    targetMuscles: ['cardiovascular system', 'quads', 'hamstrings', 'glutes'], difficulty: 1,
+  },
+  {
+    id: 'e25', name: 'Walking Program (Progressive)', category: 'cardio',
+    duration: 'Phase 1: 15–20min | Phase 2: 30min | Phase 3: 45min | Phase 4: 60+ min',
+    equipment: ['supportive walking shoes'],
+    instructions: 'Flat terrain Phases 1–2. Introduce gentle hills in Phase 3. Hiking trails in Phase 4. Always warm up with 5-min gentle walk.',
+    aclModification: 'Avoid uneven terrain until Phase 3. Wear proper knee-supportive footwear. Stop if acute knee pain occurs.',
+    targetMuscles: ['cardiovascular', 'legs', 'core'], difficulty: 1,
+  },
+  {
+    id: 'e26', name: 'Seated Resistance Band HIIT Circuit', category: 'cardio',
+    duration: '20–30 minutes',
+    equipment: ['resistance bands', 'chair'],
+    instructions: 'Alternate 40s effort / 20s rest: arm circles, seated rows, overhead press, bicep curls, seated march. Keeps heart rate up with zero knee impact.',
+    aclModification: 'All exercises done seated — zero knee impact. Great Phase 1–2 option.',
+    targetMuscles: ['full body', 'cardiovascular system'], difficulty: 2,
+  },
+  {
+    id: 'e27', name: 'Yoga Flow (Gentle)', category: 'flexibility',
+    duration: '30–45 minutes',
+    equipment: ['yoga mat'],
+    instructions: "Focus on: Cat-Cow, Child's Pose, Seated Forward Fold, Pigeon Pose (gentle), Supine Twist, Warrior I (modified). Hold each pose 30–60 sec.",
+    aclModification: "Avoid deep knee flexion. Modify Warrior poses to shallow knee bend.",
+    targetMuscles: ['hip flexors', 'hamstrings', 'thoracic spine', 'glutes'], difficulty: 1,
+  },
+  {
+    id: 'e28', name: 'Pilates Core Series', category: 'core',
+    duration: '20–30 minutes',
+    equipment: ['yoga mat'],
+    instructions: 'Hundred (modified), Single Leg Stretch, Double Leg Stretch (modified), Spine Stretch Forward, Rolling Like a Ball (gentle). Emphasize breath and core engagement.',
+    aclModification: 'Avoid exercises requiring deep knee bend. All lying-down exercises are safe. Great for hourglass shape.',
+    targetMuscles: ['core', 'inner thighs', 'hip flexors', 'back'], difficulty: 2,
+  },
+];
+
+export const workoutDays: WorkoutDay[] = [
+  // ─── PHASE 1: Foundation (Weeks 1–6) ────────────────────────────────────────
+  { id: 'p1d1', name: 'Upper Body Foundation', type: 'upper', phase: 1, dayOfWeek: 1, duration: '30–35 min', description: 'Build upper body strength and posture. All exercises are joint-safe and beginner-friendly.', exerciseIds: ['e01', 'e02', 'e03', 'e04', 'e05', 'e23'] },
+  { id: 'p1d2', name: 'Low-Impact Cardio + Stretch', type: 'cardio', phase: 1, dayOfWeek: 2, duration: '25–30 min', description: 'Steady-state cardio to build your aerobic base. Bike or elliptical only in Phase 1.', exerciseIds: ['e24', 'e27'], cardioNotes: '20 min bike/elliptical at easy pace, followed by 10 min gentle yoga stretch.' },
+  { id: 'p1d3', name: 'Lower Body & Joint Stability', type: 'lower', phase: 1, dayOfWeek: 3, duration: '30–35 min', description: 'Focus on glute activation, hip stability, and knee rehabilitation movements.', exerciseIds: ['e09', 'e11', 'e12', 'e14', 'e17', 'e23'] },
+  { id: 'p1d4', name: 'Active Rest — Gentle Walk & Yoga', type: 'rest', phase: 1, dayOfWeek: 4, duration: '20–25 min', description: 'Light movement only. A gentle walk + stretching to aid recovery.', exerciseIds: ['e25', 'e27'], cardioNotes: 'Walk 15 min on flat surface. Finish with 10 min yoga.' },
+  { id: 'p1d5', name: 'Full Body Circuit', type: 'full_body', phase: 1, dayOfWeek: 5, duration: '30–40 min', description: 'Light full-body circuit to build endurance without high impact.', exerciseIds: ['e01', 'e06', 'e09', 'e11', 'e19', 'e18', 'e26'] },
+  { id: 'p1d6', name: 'Cardio + Pilates Core', type: 'cardio', phase: 1, dayOfWeek: 6, duration: '40 min', description: 'Longer cardio session + Pilates for core and waist sculpting.', exerciseIds: ['e24', 'e28'], cardioNotes: '25 min bike/elliptical. Then 15 min Pilates core series.' },
+  { id: 'p1d7', name: 'Full Rest', type: 'rest', phase: 1, dayOfWeek: 0, duration: 'Rest day', description: 'Complete rest. Focus on sleep, hydration, and meal prep for the week.', exerciseIds: [] },
+  // ─── PHASE 2: Building Strength (Weeks 7–14) ────────────────────────────────
+  { id: 'p2d1', name: 'Upper Body Strength', type: 'upper', phase: 2, dayOfWeek: 1, duration: '35–40 min', description: 'Progressive upper body training. Increase resistance from Phase 1.', exerciseIds: ['e07', 'e08', 'e01', 'e03', 'e04', 'e05', 'e20'] },
+  { id: 'p2d2', name: 'Cardio + Core', type: 'cardio', phase: 2, dayOfWeek: 2, duration: '40–45 min', description: 'Increased cardio duration with core work.', exerciseIds: ['e24', 'e18', 'e22', 'e21'], cardioNotes: '30 min bike/elliptical at moderate pace, then 10 min core.' },
+  { id: 'p2d3', name: 'Lower Body Strength', type: 'lower', phase: 2, dayOfWeek: 3, duration: '35–40 min', description: 'Progressive lower body work. Introduce step-ups and progress all Phase 1 exercises.', exerciseIds: ['e10', 'e11', 'e12', 'e13', 'e14', 'e15', 'e16', 'e17'] },
+  { id: 'p2d4', name: 'Yoga & Flexibility', type: 'yoga', phase: 2, dayOfWeek: 4, duration: '35–45 min', description: 'Full yoga flow session for flexibility, balance, and mental recovery.', exerciseIds: ['e27'], cardioNotes: 'Full 40-minute gentle/moderate yoga flow. Focus on hip openers and spine mobility.' },
+  { id: 'p2d5', name: 'Full Body Strength Circuit', type: 'full_body', phase: 2, dayOfWeek: 5, duration: '40–45 min', description: 'Combined upper + lower + core circuit for total body conditioning.', exerciseIds: ['e07', 'e09', 'e01', 'e13', 'e22', 'e19', 'e28'] },
+  { id: 'p2d6', name: 'Long Cardio Session', type: 'cardio', phase: 2, dayOfWeek: 6, duration: '45–50 min', description: 'Build aerobic endurance. Start introducing walking outdoors.', exerciseIds: ['e24', 'e25'], cardioNotes: '35 min bike/elliptical OR 40 min outdoor walk on flat path.' },
+  { id: 'p2d7', name: 'Active Rest / Light Walk', type: 'rest', phase: 2, dayOfWeek: 0, duration: '15–20 min', description: 'Short gentle walk and full-body stretch.', exerciseIds: ['e25', 'e27'], cardioNotes: '15 min easy walk. 10 min stretch/foam roll.' },
+  // ─── PHASE 3: Progressive Overload (Weeks 15–22) ────────────────────────────
+  { id: 'p3d1', name: 'Upper Body — Strength & Sculpt', type: 'upper', phase: 3, dayOfWeek: 1, duration: '40–45 min', description: 'Heavier weights, focus on shoulder development and upper back for hourglass shape.', exerciseIds: ['e07', 'e08', 'e02', 'e03', 'e04', 'e05', 'e06', 'e20'] },
+  { id: 'p3d2', name: 'HIIT Cardio (Low Impact)', type: 'cardio', phase: 3, dayOfWeek: 2, duration: '40 min', description: 'Interval training on bike or elliptical to boost calorie burn.', exerciseIds: ['e24', 'e26'], cardioNotes: '5 min warm-up. Alternate 2 min moderate / 1 min hard × 10 rounds. 5 min cool-down.' },
+  { id: 'p3d3', name: 'Lower Body — Glute Focus', type: 'lower', phase: 3, dayOfWeek: 3, duration: '40–45 min', description: 'Heavy glute and hip work for hourglass sculpting. Progress step height.', exerciseIds: ['e10', 'e13', 'e11', 'e15', 'e16', 'e14', 'e17'] },
+  { id: 'p3d4', name: 'Core & Pilates', type: 'yoga', phase: 3, dayOfWeek: 4, duration: '35 min', description: 'Dedicated core and Pilates session to define waist and improve posture.', exerciseIds: ['e18', 'e19', 'e20', 'e21', 'e22', 'e28'] },
+  { id: 'p3d5', name: 'Full Body Sculpt', type: 'full_body', phase: 3, dayOfWeek: 5, duration: '45–50 min', description: 'High-rep, moderate-weight circuit for lean muscle tone and calorie burn.', exerciseIds: ['e07', 'e08', 'e10', 'e11', 'e03', 'e09', 'e22', 'e28'] },
+  { id: 'p3d6', name: 'Long Walk / Hike Prep', type: 'cardio', phase: 3, dayOfWeek: 6, duration: '50–60 min', description: 'Build hiking and long-distance endurance. Try gentle hills.', exerciseIds: ['e25'], cardioNotes: '50 min walk — incorporate gentle incline or light hill. Progress to hike in Phase 4.' },
+  { id: 'p3d7', name: 'Recovery — Yoga & Stretching', type: 'rest', phase: 3, dayOfWeek: 0, duration: '30 min', description: 'Deep recovery yoga session with long holds and breathing.', exerciseIds: ['e27'] },
+  // ─── PHASE 4: Performance (Weeks 23–30+) ────────────────────────────────────
+  { id: 'p4d1', name: 'Upper Body — Hourglass Sculpt', type: 'upper', phase: 4, dayOfWeek: 1, duration: '45 min', description: 'Shoulder, back, and arm focus for the classic hourglass V-taper.', exerciseIds: ['e07', 'e08', 'e02', 'e03', 'e01', 'e06', 'e04', 'e20'] },
+  { id: 'p4d2', name: 'Run-Walk Intervals', type: 'cardio', phase: 4, dayOfWeek: 2, duration: '45 min', description: 'Begin run-walk progression to build running endurance safely.', exerciseIds: ['e25'], cardioNotes: '5 min walk warm-up. Alternate: 2 min brisk walk / 1 min light jog × 12 rounds. 5 min cool-down. Listen to your knees.' },
+  { id: 'p4d3', name: 'Lower Body — Glute & Hip Power', type: 'lower', phase: 4, dayOfWeek: 3, duration: '45 min', description: 'Advanced lower body session for strong, sculpted glutes and stable knees.', exerciseIds: ['e10', 'e11', 'e13', 'e15', 'e16', 'e17', 'e14'] },
+  { id: 'p4d4', name: 'Yoga & Mobility', type: 'yoga', phase: 4, dayOfWeek: 4, duration: '40–45 min', description: 'Deeper flexibility and joint mobility work for hiking and running readiness.', exerciseIds: ['e27', 'e28'] },
+  { id: 'p4d5', name: 'Full Body Power Circuit', type: 'full_body', phase: 4, dayOfWeek: 5, duration: '45–50 min', description: 'High-intensity (low-impact) circuit to maximize calorie burn and full-body tone.', exerciseIds: ['e07', 'e08', 'e10', 'e11', 'e13', 'e22', 'e21', 'e26'] },
+  { id: 'p4d6', name: 'Long Hike / Outdoor Cardio', type: 'cardio', phase: 4, dayOfWeek: 6, duration: '60–90 min', description: "The main event — a proper hike or long outdoor walk. You've earned this!", exerciseIds: ['e25'], cardioNotes: '60–90 min on a trail or varied terrain. Bring water and supportive footwear.' },
+  { id: 'p4d7', name: 'Active Recovery', type: 'rest', phase: 4, dayOfWeek: 0, duration: '20–30 min', description: 'Foam rolling, light stretching, and walking to aid muscle recovery.', exerciseIds: ['e27'], cardioNotes: '15 min easy walk + 15 min yoga/stretch.' },
+];
+
+export const getPhaseWorkouts = (phase: number) => workoutDays.filter(w => w.phase === phase);
+export const getTodayWorkout = (phase: number, dayOfWeek: number) => workoutDays.find(w => w.phase === phase && w.dayOfWeek === dayOfWeek);
+export const getExerciseById = (id: string) => exercises.find(e => e.id === id);
+
+export const phaseInfo = {
+  1: { name: 'Foundation', weeks: '1–6', focus: 'Joint stability, mobility, and building exercise habits', intensity: 'Low', color: '#10B981' },
+  2: { name: 'Strength Building', weeks: '7–14', focus: 'Progressive strength, increased cardio, walking outdoors', intensity: 'Moderate', color: '#3B82F6' },
+  3: { name: 'Progressive Overload', weeks: '15–22', focus: 'Heavier training, HIIT cardio, hourglass sculpting, hiking prep', intensity: 'Moderate-High', color: '#8B5CF6' },
+  4: { name: 'Performance', weeks: '23–30+', focus: 'Run-walk intervals, long hikes, peak body composition', intensity: 'High', color: '#EC4899' },
+};
