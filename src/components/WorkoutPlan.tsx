@@ -55,8 +55,18 @@ const WorkoutPlan: React.FC = () => {
     <div className="page">
       <div className="page-header">
         <h1>💪 Workout Plan</h1>
-        <p className="subtitle">Your ACL-safe, progressive training program</p>
+        <p className="subtitle">Your progressive training program</p>
       </div>
+
+      {activeProfile?.healthConcerns && (
+        <div className="card" style={{ borderLeft: '4px solid #f59e0b', background: 'var(--card-bg)' }}>
+          <div className="card-header-row">
+            <h3 className="card-title" style={{ color: '#f59e0b' }}>⚠️ Health Concerns</h3>
+          </div>
+          <p className="form-note" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{activeProfile.healthConcerns}</p>
+          <p className="form-note" style={{ marginTop: '0.4rem' }}>Review Modification Notes on any exercise and adapt as needed.</p>
+        </div>
+      )}
 
       <div className="phase-tabs">
         {([1, 2, 3, 4] as WorkoutPhase[]).map(p => (
@@ -172,7 +182,7 @@ const WorkoutPlan: React.FC = () => {
                     {selectedExercise?.id === id && (
                       <div className="exercise-detail">
                         <div className="exercise-section"><strong>How to do it:</strong><p>{ex.instructions}</p></div>
-                        <div className="exercise-section acl-note"><strong>🦵 ACL Modification:</strong><p>{ex.aclModification}</p></div>
+                        <div className="exercise-section"><strong>💡 Modification Notes:</strong><p>{ex.aclModification}</p></div>
                         <div className="exercise-section"><strong>Equipment:</strong> {ex.equipment.join(', ')}</div>
                         <div className="exercise-section"><strong>Target muscles:</strong> {ex.targetMuscles.join(', ')}</div>
                       </div>

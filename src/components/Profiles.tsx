@@ -4,10 +4,6 @@ import { ActivityLevel, FitnessGoal, WorkoutPhase } from '../types';
 import { todayStr, calculateCurrentPhase, USER_PROFILE, GOAL_LABELS, ACTIVITY_LABELS } from '../utils/calculations';
 
 const AVATAR_OPTIONS = ['🏃', '💪', '🌿', '⚡', '🌸', '🔥', '🏋️', '🧘', '🚴', '🏊'];
-const RESTRICTION_OPTIONS = [
-  'Vegetarian', 'Vegan', 'Gluten-free', 'Dairy-free', 'Allium-free',
-  'Nut-free', 'Low-carb', 'Keto', 'Halal', 'Kosher',
-];
 
 const Profiles: React.FC = () => {
   const { state, dispatch, activeProfile } = useApp();
@@ -22,11 +18,13 @@ const Profiles: React.FC = () => {
     startWeight: '',
     goalWeight: '',
     dietaryRestrictions: [] as string[],
+    healthConcerns: '',
     startDate: todayStr(),
     fitnessGoal: 'weight_loss' as FitnessGoal,
     activityLevel: 'moderately_active' as ActivityLevel,
   });
   const [saved, setSaved] = useState(false);
+  const [newRestriction, setNewRestriction] = useState('');
 
   const [showOura, setShowOura] = useState(false);
   const [ouraInput, setOuraInput] = useState('');
@@ -44,19 +42,23 @@ const Profiles: React.FC = () => {
       startWeight: String(activeProfile.startWeight),
       goalWeight: String(activeProfile.goalWeight),
       dietaryRestrictions: [...activeProfile.dietaryRestrictions],
+      healthConcerns: activeProfile.healthConcerns ?? '',
       startDate: activeProfile.startDate,
       fitnessGoal: activeProfile.fitnessGoal ?? 'weight_loss',
       activityLevel: activeProfile.activityLevel ?? 'moderately_active',
     });
   }, [activeProfile?.profileId]);
 
-  const toggleRestriction = (r: string) =>
-    setForm(p => ({
-      ...p,
-      dietaryRestrictions: p.dietaryRestrictions.includes(r)
-        ? p.dietaryRestrictions.filter(x => x !== r)
-        : [...p.dietaryRestrictions, r],
-    }));
+  const addRestriction = () => {
+    const val = newRestriction.trim();
+    if (val && !form.dietaryRestrictions.map(r => r.toLowerCase()).includes(val.toLowerCase())) {
+      setForm(p => ({ ...p, dietaryRestrictions: [...p.dietaryRestrictions, val] }));
+    }
+    setNewRestriction('');
+  };
+
+  const removeRestriction = (r: string) =>
+    setForm(p => ({ ...p, dietaryRestrictions: p.dietaryRestrictions.filter(x => x !== r) }));
 
   const handleSave = () => {
     if (!form.name.trim() || !activeProfile) { alert('Please enter your name.'); return; }
@@ -76,6 +78,7 @@ const Profiles: React.FC = () => {
         currentPhase: calculateCurrentPhase(form.startDate || activeProfile.startDate) as WorkoutPhase,
         fitnessGoal: form.fitnessGoal,
         activityLevel: form.activityLevel,
+        healthConcerns: form.healthConcerns,
       },
     });
     setSaved(true);
@@ -196,17 +199,48 @@ const Profiles: React.FC = () => {
 
         <div className="form-group">
           <label>Dietary Restrictions</label>
-          <div className="restriction-chips">
-            {RESTRICTION_OPTIONS.map(r => (
-              <button
-                key={r}
-                className={`chip ${form.dietaryRestrictions.includes(r) ? 'active' : ''}`}
-                onClick={() => toggleRestriction(r)}
-              >
-                {r}
-              </button>
-            ))}
+          <div className="form-row" style={{ alignItems: 'flex-start' }}>
+            <input
+              className="form-input"
+              value={newRestriction}
+              onChange={e => setNewRestriction(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addRestriction(); } }}
+              placeholder="e.g. gluten-free, vegan, nut allergy…"
+            />
+            <button className="btn-secondary" onClick={addRestriction} style={{ whiteSpace: 'nowrap' }}>Add</button>
           </div>
+          {form.dietaryRestrictions.length > 0 && (
+            <div className="restriction-chips" style={{ marginTop: '0.5rem' }}>
+              {form.dietaryRestrictions.map(r => (
+                <span key={r} className="chip active" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                  {r}
+                  <button
+                    onClick={() => removeRestriction(r)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 1, fontSize: '0.9rem', color: 'inherit' }}
+                    aria-label={`Remove ${r}`}
+                  >×</button>
+                </span>
+              ))}
+            </div>
+          )}
+          <p className="form-note" style={{ marginTop: '0.4rem' }}>
+            Meals auto-filter for: vegetarian, vegan, gluten-free, dairy-free, nut-free, low-carb, keto, halal.
+          </p>
+        </div>
+
+        <div className="form-group">
+          <label>Health Concerns & Injuries</label>
+          <textarea
+            className="form-input"
+            rows={3}
+            value={form.healthConcerns}
+            onChange={e => setForm(p => ({ ...p, healthConcerns: e.target.value }))}
+            placeholder="e.g. ACL reconstruction (left knee), lower back pain, hypertension…"
+            style={{ resize: 'vertical' }}
+          />
+          <p className="form-note" style={{ marginTop: '0.4rem' }}>
+            Shown as a reminder in your workout plan so you can adapt exercises accordingly.
+          </p>
         </div>
 
         <div className="lwi-actions">

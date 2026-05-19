@@ -121,6 +121,7 @@ export interface Profile {
   createdAt: string;
   fitnessGoal: FitnessGoal;
   activityLevel: ActivityLevel;
+  healthConcerns: string;
 }
 
 export interface HealthDataLog {

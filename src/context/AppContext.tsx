@@ -170,6 +170,7 @@ async function loadProfiles(userId: string): Promise<Profile[]> {
     createdAt: r.created_at ?? new Date().toISOString(),
     fitnessGoal: (r.fitness_goal ?? 'weight_loss') as import('../types').FitnessGoal,
     activityLevel: (r.activity_level ?? 'moderately_active') as import('../types').ActivityLevel,
+    healthConcerns: r.health_concerns ?? '',
   }));
 }
 
@@ -552,6 +553,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             start_date: p.startDate ?? null, current_phase: p.currentPhase ?? 1,
             fitness_goal: p.fitnessGoal ?? 'weight_loss',
             activity_level: p.activityLevel ?? 'moderately_active',
+            health_concerns: p.healthConcerns ?? '',
           } as any).eq('profile_id', p.profileId);
           break;
         }

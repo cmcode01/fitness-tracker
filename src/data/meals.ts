@@ -600,18 +600,18 @@ const MEAL_DIETARY_FLAGS: Record<string, string[]> = {
   s10: ['vegetarian', 'allium-free', 'low-carb', 'keto', 'halal'],
 };
 
-// Profile restriction label → dietary flag
-const RESTRICTION_TO_FLAG: Record<string, string> = {
-  'Vegetarian': 'vegetarian',
-  'Vegan': 'vegan',
-  'Gluten-free': 'gluten-free',
-  'Dairy-free': 'dairy-free',
-  'Allium-free': 'allium-free',
-  'Nut-free': 'nut-free',
-  'Low-carb': 'low-carb',
-  'Keto': 'keto',
-  'Halal': 'halal',
-};
+// Known dietary flags supported by meal data
+const KNOWN_FLAGS = ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'low-carb', 'keto', 'halal'];
+
+function toKey(s: string): string {
+  return s.toLowerCase().replace(/[\s\-_]+/g, '');
+}
+
+// Maps normalized free-form input to a known flag if one matches
+function resolveFlag(input: string): string | null {
+  const key = toKey(input);
+  return KNOWN_FLAGS.find(f => toKey(f) === key) ?? null;
+}
 
 export function getMealDietaryFlags(mealId: string): string[] {
   return MEAL_DIETARY_FLAGS[mealId] ?? ['vegetarian', 'halal'];
@@ -621,7 +621,8 @@ export function mealMatchesRestrictions(meal: Meal, restrictions: string[]): boo
   if (!restrictions || restrictions.length === 0) return true;
   const flags = getMealDietaryFlags(meal.id);
   return restrictions.every(r => {
-    const flag = RESTRICTION_TO_FLAG[r];
+    const flag = resolveFlag(r);
+    // If input doesn't match a known dietary flag, we can't auto-filter on it — pass through
     return !flag || flags.includes(flag);
   });
 }
