@@ -53,8 +53,8 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
   const progressPct = Math.min(100, Math.max(0, totalToLose > 0 ? (lostSoFar / totalToLose) * 100 : 0));
 
   const bmr = calculateBMR(latestWeight, heightInches, age);
-  const baseCals = calculateTargetCalories(calculateTDEE(bmr));
-  const targetProtein = calculateProteinTarget(latestWeight);
+  const baseCals = calculateTargetCalories(calculateTDEE(bmr, profile?.activityLevel), profile?.fitnessGoal);
+  const targetProtein = calculateProteinTarget(latestWeight, profile?.fitnessGoal);
 
   // Today's Oura health data
   const todayHealth = state.healthDataLogs.find(h => h.date === today && h.profileId === state.activeProfileId) ?? null;

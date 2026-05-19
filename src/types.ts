@@ -2,6 +2,8 @@ export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 export type Cuisine = 'mexican' | 'italian' | 'indian' | 'mediterranean' | 'asian' | 'american' | 'moroccan' | 'greek';
 export type WorkoutPhase = 1 | 2 | 3 | 4;
 export type DayType = 'upper' | 'lower' | 'cardio' | 'full_body' | 'yoga' | 'rest';
+export type FitnessGoal = 'weight_loss' | 'muscle_gain' | 'maintenance' | 'endurance' | 'strength';
+export type ActivityLevel = 'sedentary' | 'lightly_active' | 'moderately_active' | 'very_active';
 
 export interface Meal {
   id: string;
@@ -117,6 +119,8 @@ export interface Profile {
   currentPhase: WorkoutPhase;
   isDefault: boolean;
   createdAt: string;
+  fitnessGoal: FitnessGoal;
+  activityLevel: ActivityLevel;
 }
 
 export interface HealthDataLog {

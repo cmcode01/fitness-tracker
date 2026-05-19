@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { meals, getWeeklyMealPlan, mealMatchesRestrictions } from '../data/meals';
 import { Meal, MealType } from '../types';
-import { calculateCurrentWeek, DAY_SHORT, todayStr } from '../utils/calculations';
+import {
+  calculateCurrentWeek, DAY_SHORT, todayStr,
+  calculateBMR, calculateTDEE, calculateTargetCalories, calculateProteinTarget,
+  GOAL_LABELS, USER_PROFILE,
+} from '../utils/calculations';
 
 const CUISINE_EMOJI: Record<string, string> = {
   mexican: '🌮', italian: '🍝', indian: '🍛', mediterranean: '🫙',
@@ -20,6 +24,13 @@ const MealPlan: React.FC = () => {
 
   const restrictions = activeProfile?.dietaryRestrictions ?? [];
   const weekNumber = calculateCurrentWeek(state.startDate) - 1;
+
+  const latestWeight = [...state.weightLogs].sort((a, b) => b.date.localeCompare(a.date))[0]?.weight
+    ?? activeProfile?.startWeight ?? USER_PROFILE.startWeight;
+  const bmr = calculateBMR(latestWeight, activeProfile?.heightInches ?? USER_PROFILE.heightInches, activeProfile?.age ?? USER_PROFILE.age);
+  const tdee = calculateTDEE(bmr, activeProfile?.activityLevel);
+  const targetCals = calculateTargetCalories(tdee, activeProfile?.fitnessGoal);
+  const targetProtein = calculateProteinTarget(latestWeight, activeProfile?.fitnessGoal);
   const weekPlan = getWeeklyMealPlan(weekNumber, restrictions);
   const todayDow = new Date().getDay();
 
@@ -132,10 +143,15 @@ const MealPlan: React.FC = () => {
             </div>
           </div>
           <div className="card nutrition-legend">
-            <h3 className="card-title">Daily Targets</h3>
+            <div className="card-header-row">
+              <h3 className="card-title">Daily Targets</h3>
+              {activeProfile?.fitnessGoal && (
+                <span className="logged-badge">{GOAL_LABELS[activeProfile.fitnessGoal]}</span>
+              )}
+            </div>
             <div className="legend-grid">
-              <div className="legend-item"><span>🔥 Calories</span><strong>1,400–1,500</strong></div>
-              <div className="legend-item"><span>💪 Protein</span><strong>100–130g</strong></div>
+              <div className="legend-item"><span>🔥 Calories</span><strong>{targetCals.toLocaleString()}</strong></div>
+              <div className="legend-item"><span>💪 Protein</span><strong>{targetProtein}g</strong></div>
               <div className="legend-item"><span>💧 Water</span><strong>8 glasses</strong></div>
               <div className="legend-item"><span>🥦 Fiber</span><strong>25–30g</strong></div>
             </div>

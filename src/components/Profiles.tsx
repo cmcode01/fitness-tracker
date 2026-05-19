@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { WorkoutPhase } from '../types';
-import { todayStr, calculateCurrentPhase, USER_PROFILE } from '../utils/calculations';
+import { ActivityLevel, FitnessGoal, WorkoutPhase } from '../types';
+import { todayStr, calculateCurrentPhase, USER_PROFILE, GOAL_LABELS, ACTIVITY_LABELS } from '../utils/calculations';
 
 const AVATAR_OPTIONS = ['🏃', '💪', '🌿', '⚡', '🌸', '🔥', '🏋️', '🧘', '🚴', '🏊'];
 const RESTRICTION_OPTIONS = [
@@ -23,6 +23,8 @@ const Profiles: React.FC = () => {
     goalWeight: '',
     dietaryRestrictions: [] as string[],
     startDate: todayStr(),
+    fitnessGoal: 'weight_loss' as FitnessGoal,
+    activityLevel: 'moderately_active' as ActivityLevel,
   });
   const [saved, setSaved] = useState(false);
 
@@ -43,6 +45,8 @@ const Profiles: React.FC = () => {
       goalWeight: String(activeProfile.goalWeight),
       dietaryRestrictions: [...activeProfile.dietaryRestrictions],
       startDate: activeProfile.startDate,
+      fitnessGoal: activeProfile.fitnessGoal ?? 'weight_loss',
+      activityLevel: activeProfile.activityLevel ?? 'moderately_active',
     });
   }, [activeProfile?.profileId]);
 
@@ -70,6 +74,8 @@ const Profiles: React.FC = () => {
         dietaryRestrictions: form.dietaryRestrictions,
         startDate: form.startDate || activeProfile.startDate,
         currentPhase: calculateCurrentPhase(form.startDate || activeProfile.startDate) as WorkoutPhase,
+        fitnessGoal: form.fitnessGoal,
+        activityLevel: form.activityLevel,
       },
     });
     setSaved(true);
@@ -156,6 +162,36 @@ const Profiles: React.FC = () => {
         <div className="form-group">
           <label>Program Start Date</label>
           <input className="form-input" type="date" value={form.startDate} onChange={e => setForm(p => ({ ...p, startDate: e.target.value }))} />
+        </div>
+
+        <div className="form-group">
+          <label>Fitness Goal</label>
+          <div className="restriction-chips">
+            {(Object.keys(GOAL_LABELS) as FitnessGoal[]).map(g => (
+              <button
+                key={g}
+                className={`chip ${form.fitnessGoal === g ? 'active' : ''}`}
+                onClick={() => setForm(p => ({ ...p, fitnessGoal: g }))}
+              >
+                {GOAL_LABELS[g]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Activity Level</label>
+          <div className="restriction-chips">
+            {(Object.keys(ACTIVITY_LABELS) as ActivityLevel[]).map(a => (
+              <button
+                key={a}
+                className={`chip ${form.activityLevel === a ? 'active' : ''}`}
+                onClick={() => setForm(p => ({ ...p, activityLevel: a }))}
+              >
+                {ACTIVITY_LABELS[a]}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="form-group">

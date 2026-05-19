@@ -1,4 +1,4 @@
-import { HealthDataLog, WorkoutPhase } from '../types';
+import { ActivityLevel, FitnessGoal, HealthDataLog, WorkoutPhase } from '../types';
 
 export const calculateBMR = (weightLbs: number, heightInches: number, age: number): number => {
   const weightKg = weightLbs * 0.453592;
@@ -6,11 +6,45 @@ export const calculateBMR = (weightLbs: number, heightInches: number, age: numbe
   return Math.round(10 * weightKg + 6.25 * heightCm - 5 * age - 161);
 };
 
-export const calculateTDEE = (bmr: number): number => Math.round(bmr * 1.4);
+const ACTIVITY_MULTIPLIERS: Record<ActivityLevel, number> = {
+  sedentary: 1.2,
+  lightly_active: 1.375,
+  moderately_active: 1.55,
+  very_active: 1.725,
+};
 
-export const calculateTargetCalories = (tdee: number): number => Math.max(1300, tdee - 750);
+export const calculateTDEE = (bmr: number, activityLevel: ActivityLevel = 'moderately_active'): number =>
+  Math.round(bmr * ACTIVITY_MULTIPLIERS[activityLevel]);
 
-export const calculateProteinTarget = (weightLbs: number): number => Math.round(weightLbs * 0.75);
+export const calculateTargetCalories = (tdee: number, goal: FitnessGoal = 'weight_loss'): number => {
+  switch (goal) {
+    case 'weight_loss': return Math.max(1300, tdee - 500);
+    case 'muscle_gain': return tdee + 300;
+    case 'maintenance': return tdee;
+    case 'endurance': return tdee - 100;
+    case 'strength': return tdee + 200;
+  }
+};
+
+export const calculateProteinTarget = (weightLbs: number, goal: FitnessGoal = 'weight_loss'): number => {
+  const multiplier = (goal === 'muscle_gain' || goal === 'strength') ? 1.0 : 0.75;
+  return Math.round(weightLbs * multiplier);
+};
+
+export const GOAL_LABELS: Record<FitnessGoal, string> = {
+  weight_loss: 'Lose Weight',
+  muscle_gain: 'Build Muscle',
+  maintenance: 'Maintain Weight',
+  endurance: 'Improve Endurance',
+  strength: 'Build Strength',
+};
+
+export const ACTIVITY_LABELS: Record<ActivityLevel, string> = {
+  sedentary: 'Sedentary (little/no exercise)',
+  lightly_active: 'Lightly Active (1–3 days/wk)',
+  moderately_active: 'Moderately Active (3–5 days/wk)',
+  very_active: 'Very Active (6–7 days/wk)',
+};
 
 export const calculateCurrentPhase = (startDate: string): WorkoutPhase => {
   const start = new Date(startDate);

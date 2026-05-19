@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { exercises, workoutDays, phaseInfo } from '../data/workouts';
-import { WorkoutPhase } from '../types';
-import { DAY_SHORT, todayStr } from '../utils/calculations';
+import { FitnessGoal, WorkoutPhase } from '../types';
+import { DAY_SHORT, todayStr, GOAL_LABELS } from '../utils/calculations';
+
+const GOAL_WORKOUT_TIPS: Record<FitnessGoal, { tip: string; focus: string[]; emoji: string }> = {
+  weight_loss:  { emoji: '🔥', tip: 'Prioritize cardio and full-body days to maximize calorie burn. Aim for 4–5 sessions per week.', focus: ['cardio', 'full_body'] },
+  muscle_gain:  { emoji: '💪', tip: 'Focus on upper and lower body strength days. Progressive overload — increase weight or reps each week.', focus: ['upper', 'lower'] },
+  maintenance:  { emoji: '⚖️', tip: 'Balance strength and cardio sessions throughout the week. Consistency is more important than intensity.', focus: ['upper', 'lower', 'cardio', 'full_body'] },
+  endurance:    { emoji: '🚴', tip: 'Cardio and yoga days build your aerobic base and mobility. Gradually increase session duration over time.', focus: ['cardio', 'yoga'] },
+  strength:     { emoji: '🏋️', tip: 'Upper and lower body days are your priority. Track lifts and aim for progressive overload each phase.', focus: ['upper', 'lower'] },
+};
 
 type WorkoutDay = typeof workoutDays[0];
 type Exercise = typeof exercises[0];
@@ -12,7 +20,7 @@ const difficultyLabel = (d: 1 | 2 | 3) => ['Beginner', 'Intermediate', 'Advanced
 const difficultyColor = (d: 1 | 2 | 3) => ['#3CAE63', '#F59E0B', '#CD1C18'][d - 1];
 
 const WorkoutPlan: React.FC = () => {
-  const { state, dispatch } = useApp();
+  const { state, dispatch, activeProfile } = useApp();
   const [selectedPhase, setSelectedPhase] = useState<WorkoutPhase>(state.currentPhase);
   const [selectedDay, setSelectedDay] = useState<WorkoutDay | null>(null);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
@@ -76,15 +84,38 @@ const WorkoutPlan: React.FC = () => {
         {selectedPhase === state.currentPhase && <div className="current-phase-badge">✅ Your current phase</div>}
       </div>
 
+      {activeProfile?.fitnessGoal && (() => {
+        const { emoji, tip, focus } = GOAL_WORKOUT_TIPS[activeProfile.fitnessGoal];
+        return (
+          <div className="card" style={{ borderLeft: '4px solid var(--teal)' }}>
+            <div className="card-header-row">
+              <h3 className="card-title">{emoji} Goal: {GOAL_LABELS[activeProfile.fitnessGoal]}</h3>
+            </div>
+            <p className="form-note" style={{ margin: 0 }}>{tip}</p>
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.6rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Prioritized days:</span>
+              {focus.map(f => (
+                <span key={f} className="chip active" style={{ fontSize: '0.75rem', padding: '0.15rem 0.5rem', cursor: 'default' }}>
+                  {({ upper: '💪 Upper', lower: '🦵 Lower', cardio: '🚴 Cardio', full_body: '⚡ Full Body', yoga: '🧘 Yoga' } as Record<string, string>)[f] ?? f}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       <div className="card">
         <h2 className="card-title">Weekly Schedule</h2>
         <div className="weekly-schedule">
           {[1, 2, 3, 4, 5, 6, 0].map(dow => {
             const workout = phaseWorkouts.find(w => w.dayOfWeek === dow);
             const isToday = dow === todayDow;
+            const goalFocus = activeProfile?.fitnessGoal ? GOAL_WORKOUT_TIPS[activeProfile.fitnessGoal].focus : [];
+            const isGoalDay = workout && goalFocus.includes(workout.type);
             return (
               <button key={dow}
                 className={`day-card ${isToday ? 'today' : ''} ${selectedDay?.id === workout?.id ? 'selected' : ''} ${workout?.type === 'rest' ? 'rest-day' : ''}`}
+                style={isGoalDay && !isToday ? { borderColor: 'var(--teal)', borderWidth: '2px' } : undefined}
                 onClick={() => setSelectedDay(selectedDay?.id === workout?.id ? null : (workout ?? null))}>
                 <div className="day-name">{DAY_SHORT[dow]}</div>
                 {workout ? (
