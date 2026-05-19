@@ -160,7 +160,7 @@ const Journal: React.FC = () => {
               <h2 className="card-title">Measurement History</h2>
               <div className="table-wrapper">
                 <table className="data-table">
-                  <thead><tr><th>Date</th><th>Waist</th><th>Hips</th><th>Chest</th><th>Arms</th><th>Thighs</th></tr></thead>
+                  <thead><tr><th>Date</th><th>Waist</th><th>Hips</th><th>Chest</th><th>Arms</th><th>Thighs</th><th></th></tr></thead>
                   <tbody>
                     {sortedMeasurements.map(m => (
                       <tr key={m.id}>
@@ -170,6 +170,7 @@ const Journal: React.FC = () => {
                         <td>{m.chest ? `${m.chest}"` : '—'}</td>
                         <td>{m.rightArm ? `${m.rightArm}" / ${m.leftArm}"` : '—'}</td>
                         <td>{m.rightThigh ? `${m.rightThigh}" / ${m.leftThigh}"` : '—'}</td>
+                        <td><button className="btn-icon-del" onClick={() => dispatch({ type: 'DELETE_MEASUREMENT', payload: m.id })}>✕</button></td>
                       </tr>
                     ))}
                   </tbody>
@@ -247,6 +248,7 @@ const Journal: React.FC = () => {
                   <div className="nutrition-log-header">
                     <strong>{formatDate(log.date)}</strong>
                     <span>{log.totalCalories} cal · {log.totalProtein}g protein · 💧 {log.waterIntake} glasses</span>
+                    <button className="btn-icon-del" onClick={() => dispatch({ type: 'DELETE_NUTRITION_LOG', payload: log.id })} title="Delete this day's log">✕</button>
                   </div>
                   <div className="nutrition-log-meals">
                     {log.meals.map((m, i) => (
@@ -285,6 +287,7 @@ const Journal: React.FC = () => {
                       <span>{formatDate(log.date)}</span>
                       <span className="workout-duration-chip">⏱ {log.duration} min</span>
                       {log.mood && <span className="mood-chip">{log.mood === 'great' ? '🤩' : log.mood === 'good' ? '😊' : log.mood === 'okay' ? '😐' : '😓'}</span>}
+                      <button className="btn-icon-del" onClick={() => dispatch({ type: 'DELETE_WORKOUT', payload: log.id })} title="Delete this workout">✕</button>
                     </div>
                   </div>
                   {log.notes && <p className="workout-log-notes">{log.notes}</p>}

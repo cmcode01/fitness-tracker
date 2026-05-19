@@ -25,18 +25,20 @@ type Action =
   | { type: 'ADD_WEIGHT'; payload: Omit<WeightEntry, 'id'> }
   | { type: 'DELETE_WEIGHT'; payload: string }
   | { type: 'ADD_MEASUREMENT'; payload: Omit<MeasurementEntry, 'id'> }
+  | { type: 'DELETE_MEASUREMENT'; payload: string }
   | { type: 'ADD_WORKOUT_LOG'; payload: Omit<WorkoutLogEntry, 'id'> }
+  | { type: 'DELETE_WORKOUT'; payload: string }
   | { type: 'ADD_NUTRITION_LOG'; payload: Omit<NutritionLogEntry, 'id'> }
   | { type: 'UPDATE_NUTRITION_LOG'; payload: NutritionLogEntry }
+  | { type: 'DELETE_NUTRITION_LOG'; payload: string }
   | { type: 'DELETE_MEAL_FROM_LOG'; payload: { date: string; mealIndex: number } }
   | { type: 'SET_MEAL_FEEDBACK'; payload: MealFeedback }
   | { type: 'SET_PHASE'; payload: WorkoutPhase }
   | { type: 'SET_START_DATE'; payload: string }
-  | { type: 'CREATE_PROFILE'; payload: Omit<Profile, 'profileId' | 'createdAt'> }
   | { type: 'UPDATE_PROFILE'; payload: Profile }
-  | { type: 'DELETE_PROFILE'; payload: string }
   | { type: 'SET_ACTIVE_PROFILE'; payload: string }
   | { type: 'ADD_HEALTH_DATA'; payload: Omit<HealthDataLog, 'id'> }
+  | { type: 'DELETE_HEALTH_DATA'; payload: string }
   | { type: 'SET_OURA_TOKEN'; payload: string | null }
   | { type: 'LOAD'; payload: AppState }
   | { type: 'LOAD_PROFILE_DATA'; payload: Partial<AppState> };
@@ -58,8 +60,14 @@ function reducer(state: AppState, action: Action): AppState {
     case 'ADD_MEASUREMENT':
       return { ...state, measurementLogs: [...state.measurementLogs, { id: generateId(), ...action.payload }] };
 
+    case 'DELETE_MEASUREMENT':
+      return { ...state, measurementLogs: state.measurementLogs.filter(m => m.id !== action.payload) };
+
     case 'ADD_WORKOUT_LOG':
       return { ...state, workoutLogs: [...state.workoutLogs, { id: generateId(), ...action.payload }] };
+
+    case 'DELETE_WORKOUT':
+      return { ...state, workoutLogs: state.workoutLogs.filter(w => w.id !== action.payload) };
 
     case 'ADD_NUTRITION_LOG': {
       const idx = state.nutritionLogs.findIndex(n => n.date === action.payload.date);
@@ -73,6 +81,9 @@ function reducer(state: AppState, action: Action): AppState {
 
     case 'UPDATE_NUTRITION_LOG':
       return { ...state, nutritionLogs: state.nutritionLogs.map(n => n.id === action.payload.id ? action.payload : n) };
+
+    case 'DELETE_NUTRITION_LOG':
+      return { ...state, nutritionLogs: state.nutritionLogs.filter(n => n.id !== action.payload) };
 
     case 'DELETE_MEAL_FROM_LOG': {
       const { date, mealIndex } = action.payload;
@@ -100,15 +111,6 @@ function reducer(state: AppState, action: Action): AppState {
     case 'SET_START_DATE':
       return { ...state, startDate: action.payload, currentPhase: calculateCurrentPhase(action.payload) };
 
-    case 'CREATE_PROFILE': {
-      const newProfile: Profile = {
-        profileId: generateId(),
-        createdAt: new Date().toISOString(),
-        ...action.payload,
-      };
-      return { ...state, profiles: [...state.profiles, newProfile] };
-    }
-
     case 'UPDATE_PROFILE':
       return {
         ...state,
@@ -116,9 +118,6 @@ function reducer(state: AppState, action: Action): AppState {
         startDate: state.activeProfileId === action.payload.profileId ? action.payload.startDate : state.startDate,
         currentPhase: state.activeProfileId === action.payload.profileId ? action.payload.currentPhase : state.currentPhase,
       };
-
-    case 'DELETE_PROFILE':
-      return { ...state, profiles: state.profiles.filter(p => p.profileId !== action.payload) };
 
     case 'SET_ACTIVE_PROFILE': {
       const profile = state.profiles.find(p => p.profileId === action.payload);
@@ -139,6 +138,9 @@ function reducer(state: AppState, action: Action): AppState {
       }
       return { ...state, healthDataLogs: [...state.healthDataLogs, { id: generateId(), ...action.payload }] };
     }
+
+    case 'DELETE_HEALTH_DATA':
+      return { ...state, healthDataLogs: state.healthDataLogs.filter(h => h.id !== action.payload) };
 
     case 'SET_OURA_TOKEN':
       return { ...state, ouraToken: action.payload };
@@ -538,21 +540,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           } as any).eq('profile_id', profileId);
           break;
 
-        case 'CREATE_PROFILE': {
-          const newId = generateId();
-          const p = action.payload;
-          await supabase.from('profiles').insert({
-            profile_id: newId, user_id: uid, name: p.name,
-            avatar_emoji: p.avatarEmoji, age: p.age ?? null,
-            height_inches: p.heightInches ?? null, start_weight: p.startWeight ?? null,
-            goal_weight: p.goalWeight ?? null,
-            dietary_restrictions: p.dietaryRestrictions ?? [],
-            start_date: p.startDate ?? null, current_phase: p.currentPhase ?? 1,
-            is_default: p.isDefault ?? false,
-          });
-          break;
-        }
-
         case 'UPDATE_PROFILE': {
           const p = action.payload;
           await supabase.from('profiles').update({
@@ -565,8 +552,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           break;
         }
 
-        case 'DELETE_PROFILE':
-          await supabase.from('profiles').delete().eq('profile_id', action.payload);
+        case 'DELETE_MEASUREMENT':
+          await supabase.from('measurement_logs').delete().eq('id', action.payload);
+          break;
+
+        case 'DELETE_WORKOUT':
+          await supabase.from('workout_logs').delete().eq('id', action.payload);
+          break;
+
+        case 'DELETE_NUTRITION_LOG':
+          await supabase.from('nutrition_logs').delete().eq('id', action.payload);
+          break;
+
+        case 'DELETE_HEALTH_DATA':
+          await supabase.from('health_data_logs').delete().eq('id', action.payload);
           break;
       }
     } catch (err) {

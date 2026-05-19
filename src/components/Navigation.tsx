@@ -13,18 +13,18 @@ const NAV_ITEMS = [
   { id: 'meals', label: 'Meals', icon: '🥗' },
   { id: 'journal', label: 'Journal', icon: '📓' },
   { id: 'progress', label: 'Progress', icon: '📊' },
-  { id: 'profiles', label: 'Profiles', icon: '👤' },
+  { id: 'profiles', label: 'Settings', icon: '⚙️' },
 ];
 
 const Navigation: React.FC<Props> = ({ activeTab, setActiveTab, onSignOut }) => {
-  const { state, switchProfile, activeProfile } = useApp();
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const { activeProfile } = useApp();
+  const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setProfileMenuOpen(false);
+        setMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -51,45 +51,34 @@ const Navigation: React.FC<Props> = ({ activeTab, setActiveTab, onSignOut }) => 
           ))}
         </div>
 
-        {/* Profile quick-switcher */}
-        {state.profiles.length > 0 && (
-          <div className="profile-switcher-wrap" ref={menuRef}>
-            <button
-              className="profile-switcher-btn"
-              onClick={() => setProfileMenuOpen(p => !p)}
-              title="Switch profile"
-            >
-              <span className="profile-switcher-avatar">{activeProfile?.avatarEmoji ?? '👤'}</span>
-              <span className="profile-switcher-name">{activeProfile?.name ?? 'Profile'}</span>
-              <span className="profile-switcher-caret">▾</span>
-            </button>
-            {profileMenuOpen && (
-              <div className="profile-dropdown">
-                {state.profiles.map(p => (
-                  <button
-                    key={p.profileId}
-                    className={`profile-dropdown-item ${p.profileId === state.activeProfileId ? 'active' : ''}`}
-                    onClick={() => { switchProfile(p.profileId); setProfileMenuOpen(false); }}
-                  >
-                    <span>{p.avatarEmoji}</span>
-                    <span>{p.name}</span>
-                    {p.profileId === state.activeProfileId && <span className="check">✓</span>}
-                  </button>
-                ))}
-                <button
-                  className="profile-dropdown-item manage"
-                  onClick={() => { setActiveTab('profiles'); setProfileMenuOpen(false); }}
-                >
-                  ⚙️ Manage Profiles
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        <button className="nav-signout" onClick={onSignOut} title="Sign out">
-          Sign out
-        </button>
+        {/* Account menu */}
+        <div className="profile-switcher-wrap" ref={menuRef}>
+          <button
+            className="profile-switcher-btn"
+            onClick={() => setMenuOpen(p => !p)}
+            title="Account"
+          >
+            <span className="profile-switcher-avatar">{activeProfile?.avatarEmoji ?? '👤'}</span>
+            <span className="profile-switcher-name">{activeProfile?.name ?? 'Account'}</span>
+            <span className="profile-switcher-caret">▾</span>
+          </button>
+          {menuOpen && (
+            <div className="profile-dropdown">
+              <button
+                className="profile-dropdown-item"
+                onClick={() => { setActiveTab('profiles'); setMenuOpen(false); }}
+              >
+                ⚙️ My Profile
+              </button>
+              <button
+                className="profile-dropdown-item"
+                onClick={() => { setMenuOpen(false); onSignOut(); }}
+              >
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
       </nav>
       <nav className="bottom-nav">
         {NAV_ITEMS.map(item => (
