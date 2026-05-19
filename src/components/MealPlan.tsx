@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { meals, getWeeklyMealPlan } from '../data/meals';
+import { meals, getWeeklyMealPlan, mealMatchesRestrictions } from '../data/meals';
 import { Meal, MealType } from '../types';
 import { calculateCurrentWeek, DAY_SHORT, todayStr } from '../utils/calculations';
 
@@ -10,7 +10,7 @@ const CUISINE_EMOJI: Record<string, string> = {
 };
 
 const MealPlan: React.FC = () => {
-  const { state, dispatch } = useApp();
+  const { state, dispatch, activeProfile } = useApp();
   const [activeView, setActiveView] = useState<'week' | 'browse' | 'recommended'>('week');
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [filterType, setFilterType] = useState<MealType | 'all'>('all');
@@ -18,8 +18,9 @@ const MealPlan: React.FC = () => {
   const [portionSize, setPortionSize] = useState(1.0);
   const [hideDisliked, setHideDisliked] = useState(false);
 
+  const restrictions = activeProfile?.dietaryRestrictions ?? [];
   const weekNumber = calculateCurrentWeek(state.startDate) - 1;
-  const weekPlan = getWeeklyMealPlan(weekNumber);
+  const weekPlan = getWeeklyMealPlan(weekNumber, restrictions);
   const todayDow = new Date().getDay();
 
   const feedbackFor = (id: string) => state.mealFeedback[id];
@@ -59,7 +60,10 @@ const MealPlan: React.FC = () => {
     return -1;
   };
 
-  const baseMeals = meals.filter(m =>
+  const compliantMeals = meals.filter(m => mealMatchesRestrictions(m, restrictions));
+  const hiddenByRestrictions = meals.length - compliantMeals.length;
+
+  const baseMeals = compliantMeals.filter(m =>
     (filterType === 'all' || m.type === filterType) &&
     (filterCuisine === 'all' || m.cuisine === filterCuisine)
   );
@@ -69,19 +73,29 @@ const MealPlan: React.FC = () => {
     : baseMeals
   ).slice().sort((a, b) => mealScore(b) - mealScore(a));
 
-  const likedMeals = meals.filter(m => feedbackFor(m.id)?.reaction === 'liked')
+  const likedMeals = compliantMeals.filter(m => feedbackFor(m.id)?.reaction === 'liked')
     .sort((a, b) => (feedbackFor(b.id)?.rating ?? 0) - (feedbackFor(a.id)?.rating ?? 0));
 
-  const dislikedCount = meals.filter(m => feedbackFor(m.id)?.reaction === 'disliked').length;
+  const dislikedCount = compliantMeals.filter(m => feedbackFor(m.id)?.reaction === 'disliked').length;
 
-  const cuisines = Array.from(new Set(meals.map(m => m.cuisine)));
+  const cuisines = Array.from(new Set(compliantMeals.map(m => m.cuisine)));
 
   return (
     <div className="page">
       <div className="page-header">
         <h1>🥗 Meal Plan</h1>
-        <p className="subtitle">18+ unique meals — vegetarian, allium-free, high-protein</p>
+        <p className="subtitle">Meals filtered for your dietary preferences</p>
       </div>
+
+      {restrictions.length > 0 && (
+        <div className="restriction-banner">
+          <span className="restriction-banner-icon">🔍</span>
+          <span>
+            Showing meals for: <strong>{restrictions.join(', ')}</strong>
+            {hiddenByRestrictions > 0 && ` · ${hiddenByRestrictions} meal${hiddenByRestrictions > 1 ? 's' : ''} hidden`}
+          </span>
+        </div>
+      )}
 
       <div className="view-toggle">
         <button className={`toggle-btn ${activeView === 'week' ? 'active' : ''}`} onClick={() => setActiveView('week')}>📅 This Week</button>

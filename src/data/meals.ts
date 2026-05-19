@@ -524,16 +524,124 @@ export const meals: Meal[] = [
 
 export const getMealsByType = (type: Meal['type']) => meals.filter(m => m.type === type);
 
-export const getWeeklyMealPlan = (weekNumber: number) => {
-  const breakfasts = getMealsByType('breakfast');
-  const lunches = getMealsByType('lunch');
-  const dinners = getMealsByType('dinner');
-  const snacks = getMealsByType('snack');
+// ── Dietary flags ────────────────────────────────────────────────────────────
+// Flags: vegetarian | vegan | gluten-free | dairy-free | allium-free | nut-free | low-carb | keto | halal
+// Vegan ⊆ vegetarian. All meals in this app are vegetarian and halal.
+// Allium-free = no onion, garlic, leeks, shallots (jain-style meals qualify).
+// Low-carb ≤ 25g carbs. Keto ≤ 20g carbs.
+const MEAL_DIETARY_FLAGS: Record<string, string[]> = {
+  // Breakfasts
+  b01: ['vegetarian', 'allium-free', 'halal'],
+  b02: ['vegetarian', 'allium-free', 'halal'],
+  b03: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  b04: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'halal'],
+  b05: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'low-carb', 'keto', 'halal'],
+  b06: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  b07: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'halal'],
+  b08: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  b09: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'halal'],
+  b10: ['vegetarian', 'gluten-free', 'allium-free', 'halal'],
+  b11: ['vegetarian', 'gluten-free', 'allium-free', 'low-carb', 'halal'],
+  b12: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  b13: ['vegetarian', 'allium-free', 'halal'],
+  b14: ['vegetarian', 'dairy-free', 'allium-free', 'halal'],
+  b15: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  b16: ['vegetarian', 'allium-free', 'halal'],
+  b17: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  b18: ['vegetarian', 'dairy-free', 'allium-free', 'halal'],
+  // Lunches
+  l01: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  l02: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l03: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l04: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l05: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  l06: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l07: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  l08: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l09: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l10: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  l11: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l12: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l13: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  l14: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'low-carb', 'keto', 'halal'],
+  l15: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l16: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  l17: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  l18: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  // Dinners
+  d01: ['vegetarian', 'gluten-free', 'nut-free', 'halal'],
+  d02: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  d03: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  d04: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  d05: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  d06: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  d07: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  d08: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  d09: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  d10: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  d11: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  d12: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  d13: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  d14: ['vegetarian', 'vegan', 'dairy-free', 'nut-free', 'halal'],
+  d15: ['vegetarian', 'gluten-free', 'nut-free', 'halal'],
+  d16: ['vegetarian', 'allium-free', 'nut-free', 'halal'],
+  d17: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  d18: ['vegetarian', 'vegan', 'dairy-free', 'allium-free', 'nut-free', 'halal'],
+  // Snacks
+  s01: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'halal'],
+  s02: ['vegetarian', 'gluten-free', 'allium-free', 'low-carb', 'keto', 'halal'],
+  s03: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'nut-free', 'low-carb', 'halal'],
+  s04: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'low-carb', 'halal'],
+  s05: ['vegetarian', 'gluten-free', 'allium-free', 'low-carb', 'halal'],
+  s06: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'low-carb', 'keto', 'halal'],
+  s07: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'low-carb', 'keto', 'halal'],
+  s08: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'allium-free', 'nut-free', 'low-carb', 'halal'],
+  s09: ['vegetarian', 'gluten-free', 'allium-free', 'nut-free', 'halal'],
+  s10: ['vegetarian', 'allium-free', 'low-carb', 'keto', 'halal'],
+};
+
+// Profile restriction label → dietary flag
+const RESTRICTION_TO_FLAG: Record<string, string> = {
+  'Vegetarian': 'vegetarian',
+  'Vegan': 'vegan',
+  'Gluten-free': 'gluten-free',
+  'Dairy-free': 'dairy-free',
+  'Allium-free': 'allium-free',
+  'Nut-free': 'nut-free',
+  'Low-carb': 'low-carb',
+  'Keto': 'keto',
+  'Halal': 'halal',
+};
+
+export function getMealDietaryFlags(mealId: string): string[] {
+  return MEAL_DIETARY_FLAGS[mealId] ?? ['vegetarian', 'halal'];
+}
+
+export function mealMatchesRestrictions(meal: Meal, restrictions: string[]): boolean {
+  if (!restrictions || restrictions.length === 0) return true;
+  const flags = getMealDietaryFlags(meal.id);
+  return restrictions.every(r => {
+    const flag = RESTRICTION_TO_FLAG[r];
+    return !flag || flags.includes(flag);
+  });
+}
+
+export const getWeeklyMealPlan = (weekNumber: number, restrictions: string[] = []) => {
+  const compliant = (m: Meal) => mealMatchesRestrictions(m, restrictions);
+  const breakfasts = getMealsByType('breakfast').filter(compliant);
+  const lunches    = getMealsByType('lunch').filter(compliant);
+  const dinners    = getMealsByType('dinner').filter(compliant);
+  const snacks     = getMealsByType('snack').filter(compliant);
+  // Fallback to unfiltered pool if no compliant options exist for a type
+  const bPool = breakfasts.length > 0 ? breakfasts : getMealsByType('breakfast');
+  const lPool = lunches.length    > 0 ? lunches    : getMealsByType('lunch');
+  const dPool = dinners.length    > 0 ? dinners    : getMealsByType('dinner');
+  const sPool = snacks.length     > 0 ? snacks     : getMealsByType('snack');
   return Array.from({ length: 7 }, (_, day) => ({
     day,
-    breakfast: breakfasts[(weekNumber * 7 + day) % breakfasts.length],
-    lunch: lunches[(weekNumber * 7 + day) % lunches.length],
-    dinner: dinners[(weekNumber * 7 + day) % dinners.length],
-    snack: snacks[(weekNumber * 7 + day) % snacks.length],
+    breakfast: bPool[(weekNumber * 7 + day) % bPool.length],
+    lunch:     lPool[(weekNumber * 7 + day) % lPool.length],
+    dinner:    dPool[(weekNumber * 7 + day) % dPool.length],
+    snack:     sPool[(weekNumber * 7 + day) % sPool.length],
   }));
 };

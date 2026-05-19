@@ -484,6 +484,13 @@ ul, ol { list-style: none; }
 .acl-note { background: rgba(236,72,153,.06); padding: 8px; border-radius: var(--radius-sm); }
 
 /* ---------- Meal Plan ---------- */
+.restriction-banner {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--teal-light); border-left: 3px solid var(--teal);
+  border-radius: 8px; padding: 10px 14px; margin-bottom: 14px;
+  font-size: 13px; color: var(--gray-700);
+}
+.restriction-banner-icon { font-size: 15px; }
 .view-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
 .toggle-btn {
   padding: 8px 18px;
