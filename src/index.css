@@ -980,3 +980,168 @@ ul, ol { list-style: none; }
   border-radius: 50%;
   animation: spin .7s linear infinite;
 }
+
+/* ============================================================
+   NEW FEATURES — v2
+   ============================================================ */
+
+/* ---------- Logged meals (delete) ---------- */
+.logged-meals-list { display: flex; flex-direction: column; gap: 8px; }
+
+.logged-meal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-200);
+}
+.logged-meal-info { display: flex; flex-direction: column; gap: 2px; }
+.logged-meal-name { font-weight: 600; font-size: 14px; color: var(--gray-800); }
+.logged-meal-meta { font-size: 12px; color: var(--gray-500); }
+
+/* Journal meal chip delete button */
+.nutrition-meal-chip-del {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.meal-chip-del-btn {
+  font-size: 10px;
+  color: var(--gray-400);
+  padding: 1px 3px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color .15s, background .15s;
+}
+.meal-chip-del-btn:hover { color: var(--red); background: var(--red-light); }
+
+/* ---------- Oura / Health scores ---------- */
+.health-scores-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.health-score-item { text-align: center; min-width: 72px; }
+.health-score-val { font-size: 28px; font-weight: 800; line-height: 1; }
+.health-score-label { font-size: 11px; color: var(--gray-500); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.health-adjustment-note {
+  font-size: 12px;
+  color: var(--gray-600);
+  background: var(--teal-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+.health-adjustment-note.warning {
+  background: var(--red-light);
+  color: #9B1C1C;
+}
+
+/* ---------- Profiles ---------- */
+.profiles-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+
+.profile-card { border: 2px solid transparent; transition: border-color .2s; }
+.profile-card.profile-active { border-color: var(--purple); }
+
+.profile-card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
+.profile-avatar { font-size: 40px; line-height: 1; flex-shrink: 0; }
+.profile-info { flex: 1; }
+.profile-name { font-size: 18px; font-weight: 700; color: var(--gray-800); display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.active-badge { font-size: 11px; font-weight: 600; background: var(--purple); color: white; padding: 2px 8px; border-radius: 20px; }
+.profile-meta { font-size: 13px; color: var(--gray-500); margin-bottom: 6px; }
+.profile-restrictions { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.profile-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-sm { padding: 6px 14px !important; font-size: 13px !important; }
+.btn-danger {
+  background: var(--red-light);
+  color: var(--red);
+  border: 1px solid #FCA5A5;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  padding: 8px 16px;
+  transition: background .15s;
+}
+.btn-danger:hover { background: #FEE2E2; }
+
+/* Profile form */
+.profile-form { margin-bottom: 16px; }
+.avatar-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.avatar-option {
+  font-size: 24px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: border-color .15s;
+}
+.avatar-option.selected { border-color: var(--purple); background: var(--purple-light); }
+
+.restriction-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+
+/* Profile switcher in top nav */
+.profile-switcher-wrap { position: relative; }
+
+.profile-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-700);
+  transition: background .15s;
+}
+.profile-switcher-btn:hover { background: var(--gray-200); }
+.profile-switcher-avatar { font-size: 18px; }
+.profile-switcher-name { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-switcher-caret { font-size: 10px; color: var(--gray-400); }
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  overflow: hidden;
+}
+.profile-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 14px;
+  color: var(--gray-700);
+  transition: background .15s;
+}
+.profile-dropdown-item:hover { background: var(--gray-50); }
+.profile-dropdown-item.active { font-weight: 600; color: var(--purple); }
+.profile-dropdown-item.manage { border-top: 1px solid var(--gray-200); color: var(--gray-500); font-size: 13px; }
+.profile-dropdown-item .check { margin-left: auto; color: var(--purple); font-weight: 700; }
+
+/* ---------- Meal personalization ---------- */
+.liked-meal-card { border: 1px solid #FCA5A5; }
+.meal-card-disliked { opacity: 0.55; }
+
+.chip.small { font-size: 11px; padding: 2px 8px; }
+
+/* ---------- Responsive tweaks for new nav items ---------- */
+@media (max-width: 767px) {
+  .profile-switcher-wrap { display: none; }
+}
+@media (min-width: 768px) {
+  .profile-switcher-name { display: inline; }
+}

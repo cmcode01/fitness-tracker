@@ -6,6 +6,7 @@ import { Meal } from '../types';
 import {
   calculateBMR, calculateTDEE, calculateTargetCalories,
   calculateProteinTarget, calculateCurrentWeek,
+  calculateAdjustedCalories, getWorkoutIntensity, scoreColor,
   USER_PROFILE, DAY_NAMES, todayStr,
 } from '../utils/calculations';
 
@@ -18,13 +19,14 @@ const MEAL_ICONS = ['🌅', '☀️', '🌙', '🍎'];
 const MEAL_LABELS = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
 
 const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
-  const { state, dispatch } = useApp();
+  const { state, dispatch, activeProfile, syncOura } = useApp();
 
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const [logWorkoutOpen, setLogWorkoutOpen] = useState(false);
   const [logForm, setLogForm] = useState<{ duration: number; mood: Mood; notes: string }>({ duration: 45, mood: 'good', notes: '' });
   const [mealPortions, setMealPortions] = useState<Record<string, number>>({});
   const [weightInput, setWeightInput] = useState('');
+  const [syncing, setSyncing] = useState(false);
 
   const today = todayStr();
   const now = new Date();
@@ -38,13 +40,26 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
   const todayNutrition = state.nutritionLogs.find(n => n.date === today);
   const workoutLoggedToday = state.workoutLogs.find(w => w.date === today);
 
-  const latestWeight = [...state.weightLogs].sort((a, b) => b.date.localeCompare(a.date))[0]?.weight ?? USER_PROFILE.startWeight;
-  const lostSoFar = USER_PROFILE.startWeight - latestWeight;
-  const progressPct = Math.min(100, Math.max(0, (lostSoFar / (USER_PROFILE.startWeight - USER_PROFILE.targetWeight)) * 100));
+  // Use active profile data when available
+  const profile = activeProfile;
+  const startWeight = profile?.startWeight ?? USER_PROFILE.startWeight;
+  const targetWeight = profile?.goalWeight ?? USER_PROFILE.targetWeight;
+  const heightInches = profile?.heightInches ?? USER_PROFILE.heightInches;
+  const age = profile?.age ?? USER_PROFILE.age;
 
-  const bmr = calculateBMR(latestWeight, USER_PROFILE.heightInches, USER_PROFILE.age);
-  const targetCals = calculateTargetCalories(calculateTDEE(bmr));
+  const latestWeight = [...state.weightLogs].sort((a, b) => b.date.localeCompare(a.date))[0]?.weight ?? startWeight;
+  const lostSoFar = startWeight - latestWeight;
+  const totalToLose = startWeight - targetWeight;
+  const progressPct = Math.min(100, Math.max(0, totalToLose > 0 ? (lostSoFar / totalToLose) * 100 : 0));
+
+  const bmr = calculateBMR(latestWeight, heightInches, age);
+  const baseCals = calculateTargetCalories(calculateTDEE(bmr));
   const targetProtein = calculateProteinTarget(latestWeight);
+
+  // Today's Oura health data
+  const todayHealth = state.healthDataLogs.find(h => h.date === today && h.profileId === state.activeProfileId) ?? null;
+  const { adjustedTarget: targetCals, delta: calDelta, reason: calReason } = calculateAdjustedCalories(baseCals, todayHealth);
+  const workoutIntensity = getWorkoutIntensity(todayHealth?.readinessScore);
 
   const waterLogged = todayNutrition?.waterIntake ?? 0;
   const calsLogged = todayNutrition?.totalCalories ?? 0;
@@ -74,6 +89,10 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
         notes: todayNutrition?.notes,
       },
     });
+  };
+
+  const handleDeleteLoggedMeal = (mealIndex: number) => {
+    dispatch({ type: 'DELETE_MEAL_FROM_LOG', payload: { date: today, mealIndex } });
   };
 
   const handleSetWater = (glasses: number) => {
@@ -111,6 +130,12 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
     setWeightInput('');
   };
 
+  const handleSyncOura = async () => {
+    setSyncing(true);
+    await syncOura();
+    setSyncing(false);
+  };
+
   const greeting = now.getHours() < 12 ? 'Good Morning' : now.getHours() < 17 ? 'Good Afternoon' : 'Good Evening';
 
   return (
@@ -118,21 +143,101 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
       {/* ── Header ── */}
       <div className="today-header">
         <div>
-          <h1>{greeting} 🌿</h1>
-          <p className="subtitle">{DAY_NAMES[dayOfWeek]}, {now.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} · Week {calculateCurrentWeek(state.startDate)} · <span style={{ color: pI.color }}>Phase {phase}: {pI.name}</span></p>
+          <h1>{greeting} {profile ? profile.avatarEmoji : '🌿'}</h1>
+          <p className="subtitle">
+            {profile ? `${profile.name} · ` : ''}
+            {DAY_NAMES[dayOfWeek]}, {now.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} · Week {calculateCurrentWeek(state.startDate)} · <span style={{ color: pI.color }}>Phase {phase}: {pI.name}</span>
+          </p>
         </div>
       </div>
+
+      {/* ── Oura Health Data ── */}
+      {(todayHealth || state.ouraToken) && (
+        <div className="card">
+          <div className="card-header-row">
+            <h2 className="card-title">Oura Ring — Today</h2>
+            {state.ouraToken && (
+              <button className="btn-link" onClick={handleSyncOura} disabled={syncing}>
+                {syncing ? 'Syncing…' : '↻ Sync'}
+              </button>
+            )}
+          </div>
+          {todayHealth ? (
+            <div className="health-scores-row">
+              {todayHealth.readinessScore !== undefined && (
+                <div className="health-score-item">
+                  <div className="health-score-val" style={{ color: scoreColor(todayHealth.readinessScore) }}>
+                    {todayHealth.readinessScore}
+                  </div>
+                  <div className="health-score-label">Readiness</div>
+                </div>
+              )}
+              {todayHealth.sleepScore !== undefined && (
+                <div className="health-score-item">
+                  <div className="health-score-val" style={{ color: scoreColor(todayHealth.sleepScore) }}>
+                    {todayHealth.sleepScore}
+                  </div>
+                  <div className="health-score-label">Sleep</div>
+                </div>
+              )}
+              {todayHealth.activityScore !== undefined && (
+                <div className="health-score-item">
+                  <div className="health-score-val" style={{ color: scoreColor(todayHealth.activityScore) }}>
+                    {todayHealth.activityScore}
+                  </div>
+                  <div className="health-score-label">Activity</div>
+                </div>
+              )}
+              {todayHealth.sleepDurationHours !== undefined && (
+                <div className="health-score-item">
+                  <div className="health-score-val">{todayHealth.sleepDurationHours.toFixed(1)}h</div>
+                  <div className="health-score-label">Sleep time</div>
+                </div>
+              )}
+              {todayHealth.caloriesBurned !== undefined && (
+                <div className="health-score-item">
+                  <div className="health-score-val">{todayHealth.caloriesBurned}</div>
+                  <div className="health-score-label">Cal burned</div>
+                </div>
+              )}
+              {todayHealth.steps !== undefined && (
+                <div className="health-score-item">
+                  <div className="health-score-val">{todayHealth.steps.toLocaleString()}</div>
+                  <div className="health-score-label">Steps</div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="empty-state">No data yet — tap Sync to pull today's Oura data.</p>
+          )}
+          {calDelta !== 0 && calReason && (
+            <div className="health-adjustment-note">
+              Calorie target adjusted: {calDelta > 0 ? '+' : ''}{calDelta} cal due to {calReason}
+            </div>
+          )}
+          {workoutIntensity === 'rest' && (
+            <div className="health-adjustment-note warning">
+              Low readiness ({todayHealth?.readinessScore}) — consider a rest day or light activity today.
+            </div>
+          )}
+          {workoutIntensity === 'reduced' && (
+            <div className="health-adjustment-note">
+              Moderate readiness ({todayHealth?.readinessScore}) — reduced intensity workout recommended.
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Progress bar ── */}
       <div className="card mb-4">
         <div className="card-header-row">
-          <span className="card-label">50-lb Journey</span>
+          <span className="card-label">{totalToLose}-lb Journey</span>
           <span className="card-label-right">{progressPct.toFixed(0)}% · {latestWeight} lbs</span>
         </div>
         <div className="progress-bar-track">
           <div className="progress-bar-fill" style={{ width: `${progressPct}%` }} />
         </div>
-        <p className="progress-sub">{lostSoFar > 0 ? `${lostSoFar.toFixed(1)} lbs lost` : 'Log your first weight to start tracking'} · {(latestWeight - USER_PROFILE.targetWeight).toFixed(1)} lbs to go</p>
+        <p className="progress-sub">{lostSoFar > 0 ? `${lostSoFar.toFixed(1)} lbs lost` : 'Log your first weight to start tracking'} · {(latestWeight - targetWeight).toFixed(1)} lbs to go</p>
       </div>
 
       {/* ── Today's logged macros ── */}
@@ -141,7 +246,7 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
           <div className="tmb-item">
             <div className="tmb-val">{calsLogged}</div>
             <div className="tmb-bar-wrap"><div className="tmb-bar" style={{ width: `${Math.min(100, (calsLogged / targetCals) * 100)}%`, background: 'var(--purple)' }} /></div>
-            <div className="tmb-label">{targetCals} cal target</div>
+            <div className="tmb-label">{targetCals} cal target{calDelta !== 0 ? ` (adj)` : ''}</div>
           </div>
           <div className="tmb-item">
             <div className="tmb-val">{proteinLogged}g</div>
@@ -152,6 +257,30 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
             <div className="tmb-val">💧 {waterLogged}</div>
             <div className="tmb-bar-wrap"><div className="tmb-bar" style={{ width: `${Math.min(100, (waterLogged / 8) * 100)}%`, background: 'var(--blue)' }} /></div>
             <div className="tmb-label">8 glasses target</div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Logged Meals Today (with delete) ── */}
+      {todayNutrition && todayNutrition.meals.length > 0 && (
+        <div className="card">
+          <h2 className="card-title">Logged Meals Today</h2>
+          <div className="logged-meals-list">
+            {todayNutrition.meals.map((m, i) => (
+              <div key={i} className="logged-meal-row">
+                <div className="logged-meal-info">
+                  <span className="logged-meal-name">{m.mealName}</span>
+                  <span className="logged-meal-meta">{m.portionMultiplier}× · {m.calories} cal · {m.protein}g protein</span>
+                </div>
+                <button
+                  className="btn-icon-del"
+                  onClick={() => handleDeleteLoggedMeal(i)}
+                  title="Remove this meal"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -172,6 +301,8 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
             <div className="workout-today-meta">
               <span className="workout-type-chip">{todayWorkout.type.replace('_', ' ')}</span>
               <span className="workout-duration-chip">⏱ {todayWorkout.duration}</span>
+              {workoutIntensity === 'reduced' && <span className="workout-type-chip" style={{ background: '#f59e0b22', color: '#f59e0b' }}>Reduced intensity</span>}
+              {workoutIntensity === 'rest' && <span className="workout-type-chip" style={{ background: '#ef444422', color: '#ef4444' }}>Rest recommended</span>}
             </div>
             <h3 className="workout-today-name">{todayWorkout.name}</h3>
             <p className="workout-today-desc">{todayWorkout.description}</p>
@@ -179,7 +310,6 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
               <div className="cardio-note">📋 {todayWorkout.cardioNotes}</div>
             )}
 
-            {/* Exercise list */}
             {todayWorkout.exerciseIds.length > 0 && (
               <div className="today-exercises">
                 <p className="today-exercises-label">Exercises — tap to expand</p>
@@ -218,7 +348,6 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
               </div>
             )}
 
-            {/* Log workout inline */}
             {!workoutLoggedToday && (
               <>
                 {!logWorkoutOpen ? (
@@ -287,12 +416,15 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
 
             const portion = getMealPortion(meal.id);
             const logged = isMealLogged(meal);
+            const feedback = state.mealFeedback[meal.id];
             return (
               <div key={meal.id} className={`meal-slot ${logged ? 'meal-logged' : ''}`}>
                 <div className="meal-slot-top">
                   <div className="meal-slot-icon">{MEAL_ICONS[i]}</div>
                   <div className="meal-slot-label">{MEAL_LABELS[i]}</div>
                   {logged && <span className="meal-logged-chip">✓ Logged</span>}
+                  {feedback?.reaction === 'liked' && <span style={{ fontSize: '0.75rem' }}>❤️</span>}
+                  {feedback?.reaction === 'disliked' && <span style={{ fontSize: '0.75rem' }}>👎</span>}
                 </div>
                 <div className="meal-slot-name">{meal.name}</div>
                 <div className="meal-slot-meta">
@@ -318,14 +450,13 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
           })}
         </div>
 
-        {/* Day totals from plan */}
         <div className="plan-totals">
           Planned today: ~{
             ((todayMeals?.breakfast?.caloriesPerServing ?? 0) +
              (todayMeals?.lunch?.caloriesPerServing ?? 0) +
              (todayMeals?.dinner?.caloriesPerServing ?? 0) +
              (todayMeals?.snack?.caloriesPerServing ?? 0))
-          } cal · target {targetCals} cal
+          } cal · target {targetCals} cal{calDelta !== 0 ? ` (adjusted from ${baseCals})` : ''}
         </div>
       </div>
 

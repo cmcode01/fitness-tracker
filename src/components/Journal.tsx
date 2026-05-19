@@ -249,7 +249,16 @@ const Journal: React.FC = () => {
                     <span>{log.totalCalories} cal · {log.totalProtein}g protein · 💧 {log.waterIntake} glasses</span>
                   </div>
                   <div className="nutrition-log-meals">
-                    {log.meals.map((m, i) => <span key={i} className="nutrition-meal-chip">{m.mealName} ({m.portionMultiplier}x)</span>)}
+                    {log.meals.map((m, i) => (
+                      <span key={i} className="nutrition-meal-chip nutrition-meal-chip-del">
+                        {m.mealName} ({m.portionMultiplier}x)
+                        <button
+                          className="meal-chip-del-btn"
+                          onClick={() => dispatch({ type: 'DELETE_MEAL_FROM_LOG', payload: { date: log.date, mealIndex: i } })}
+                          title="Remove meal"
+                        >✕</button>
+                      </span>
+                    ))}
                   </div>
                 </div>
               ))}

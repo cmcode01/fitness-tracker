@@ -103,6 +103,37 @@ export interface MealFeedback {
   notes?: string;
 }
 
+export interface Profile {
+  profileId: string;
+  userId: string;
+  name: string;
+  avatarEmoji: string;
+  age: number;
+  heightInches: number;
+  startWeight: number;
+  goalWeight: number;
+  dietaryRestrictions: string[];
+  startDate: string;
+  currentPhase: WorkoutPhase;
+  isDefault: boolean;
+  createdAt: string;
+}
+
+export interface HealthDataLog {
+  id: string;
+  profileId: string;
+  date: string;
+  sleepScore?: number;
+  readinessScore?: number;
+  activityScore?: number;
+  hrvAvg?: number;
+  sleepDurationHours?: number;
+  caloriesBurned?: number;
+  steps?: number;
+  ouraSynced: boolean;
+  notes?: string;
+}
+
 export interface AppState {
   weightLogs: WeightEntry[];
   measurementLogs: MeasurementEntry[];
@@ -111,4 +142,8 @@ export interface AppState {
   mealFeedback: Record<string, MealFeedback>;
   startDate: string;
   currentPhase: WorkoutPhase;
+  profiles: Profile[];
+  activeProfileId: string | null;
+  healthDataLogs: HealthDataLog[];
+  ouraToken: string | null;
 }

@@ -11,11 +11,12 @@ const CUISINE_EMOJI: Record<string, string> = {
 
 const MealPlan: React.FC = () => {
   const { state, dispatch } = useApp();
-  const [activeView, setActiveView] = useState<'week' | 'browse'>('week');
+  const [activeView, setActiveView] = useState<'week' | 'browse' | 'recommended'>('week');
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [filterType, setFilterType] = useState<MealType | 'all'>('all');
   const [filterCuisine, setFilterCuisine] = useState<string>('all');
   const [portionSize, setPortionSize] = useState(1.0);
+  const [hideDisliked, setHideDisliked] = useState(false);
 
   const weekNumber = calculateCurrentWeek(state.startDate) - 1;
   const weekPlan = getWeeklyMealPlan(weekNumber);
@@ -50,10 +51,28 @@ const MealPlan: React.FC = () => {
     alert(`Logged: ${newMeal.calories} cal, ${newMeal.protein}g protein 🎉`);
   };
 
-  const filteredMeals = meals.filter(m =>
+  // Sort meals by feedback: liked first, neutral middle, disliked last
+  const mealScore = (meal: Meal): number => {
+    const fb = feedbackFor(meal.id);
+    if (!fb || fb.reaction === null) return 0;
+    if (fb.reaction === 'liked') return 1 + (fb.rating / 10);
+    return -1;
+  };
+
+  const baseMeals = meals.filter(m =>
     (filterType === 'all' || m.type === filterType) &&
     (filterCuisine === 'all' || m.cuisine === filterCuisine)
   );
+
+  const filteredMeals = (hideDisliked
+    ? baseMeals.filter(m => feedbackFor(m.id)?.reaction !== 'disliked')
+    : baseMeals
+  ).slice().sort((a, b) => mealScore(b) - mealScore(a));
+
+  const likedMeals = meals.filter(m => feedbackFor(m.id)?.reaction === 'liked')
+    .sort((a, b) => (feedbackFor(b.id)?.rating ?? 0) - (feedbackFor(a.id)?.rating ?? 0));
+
+  const dislikedCount = meals.filter(m => feedbackFor(m.id)?.reaction === 'disliked').length;
 
   const cuisines = Array.from(new Set(meals.map(m => m.cuisine)));
 
@@ -66,6 +85,9 @@ const MealPlan: React.FC = () => {
 
       <div className="view-toggle">
         <button className={`toggle-btn ${activeView === 'week' ? 'active' : ''}`} onClick={() => setActiveView('week')}>📅 This Week</button>
+        <button className={`toggle-btn ${activeView === 'recommended' ? 'active' : ''}`} onClick={() => setActiveView('recommended')}>
+          ❤️ For You {likedMeals.length > 0 ? `(${likedMeals.length})` : ''}
+        </button>
         <button className={`toggle-btn ${activeView === 'browse' ? 'active' : ''}`} onClick={() => setActiveView('browse')}>🔍 Browse All</button>
       </div>
 
@@ -86,6 +108,8 @@ const MealPlan: React.FC = () => {
                         <div className="week-meal-type">{['🌅', '☀️', '🌙', '🍎'][i]}</div>
                         <div className="week-meal-name">{meal.name}</div>
                         <div className="week-meal-cal">{meal.caloriesPerServing}cal</div>
+                        {feedbackFor(meal.id)?.reaction === 'liked' && <div style={{ fontSize: '0.6rem' }}>❤️</div>}
+                        {feedbackFor(meal.id)?.reaction === 'disliked' && <div style={{ fontSize: '0.6rem' }}>👎</div>}
                       </button>
                     )
                   )}
@@ -103,6 +127,50 @@ const MealPlan: React.FC = () => {
             </div>
           </div>
         </>
+      )}
+
+      {activeView === 'recommended' && (
+        <div>
+          {likedMeals.length === 0 ? (
+            <div className="card">
+              <p className="empty-state">No favorites yet — browse meals and tap ❤️ Love it to build your list!</p>
+            </div>
+          ) : (
+            <>
+              <div className="card">
+                <h2 className="card-title">Your Favorites ({likedMeals.length})</h2>
+                <p className="form-note">Meals you've liked, sorted by rating. Tap to see details or log.</p>
+                <div className="meals-grid">
+                  {likedMeals.map(meal => {
+                    const fb = feedbackFor(meal.id);
+                    return (
+                      <button key={meal.id} className="meal-card liked-meal-card" onClick={() => { setSelectedMeal(meal); setPortionSize(1.0); }}>
+                        <div className="meal-card-header">
+                          <span className="cuisine-emoji">{CUISINE_EMOJI[meal.cuisine] ?? '🍽️'}</span>
+                          <span className="meal-type-badge">{meal.type}</span>
+                          <span className="fb-icon">❤️</span>
+                        </div>
+                        <h3 className="meal-card-name">{meal.name}</h3>
+                        <div className="meal-card-meta">
+                          <span>🔥 {meal.caloriesPerServing} cal</span>
+                          <span>💪 {meal.proteinPerServing}g protein</span>
+                          <span>⏱ {meal.prepTime} min</span>
+                        </div>
+                        {fb?.rating ? <div className="meal-rating-display">{'⭐'.repeat(fb.rating)}</div> : null}
+                        {meal.weekdayFriendly && <div className="weekday-badge">Quick weekday</div>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              {dislikedCount > 0 && (
+                <div className="card">
+                  <p className="form-note">You've marked {dislikedCount} meal{dislikedCount > 1 ? 's' : ''} as disliked — these are hidden from your recommendations and deprioritized in Browse.</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       )}
 
       {activeView === 'browse' && (
@@ -129,13 +197,23 @@ const MealPlan: React.FC = () => {
                 ))}
               </div>
             </div>
+            {dislikedCount > 0 && (
+              <div className="filter-group">
+                <label className="filter-label">Preferences</label>
+                <div className="filter-chips">
+                  <button className={`chip ${hideDisliked ? 'active' : ''}`} onClick={() => setHideDisliked(p => !p)}>
+                    Hide 👎 ({dislikedCount})
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="meals-count">{filteredMeals.length} meals</div>
+          <div className="meals-count">{filteredMeals.length} meals{hideDisliked && dislikedCount > 0 ? ` (${dislikedCount} hidden)` : ''} · sorted by your preferences</div>
           <div className="meals-grid">
             {filteredMeals.map(meal => {
               const fb = feedbackFor(meal.id);
               return (
-                <button key={meal.id} className="meal-card" onClick={() => { setSelectedMeal(meal); setPortionSize(1.0); }}>
+                <button key={meal.id} className={`meal-card ${fb?.reaction === 'disliked' ? 'meal-card-disliked' : ''}`} onClick={() => { setSelectedMeal(meal); setPortionSize(1.0); }}>
                   <div className="meal-card-header">
                     <span className="cuisine-emoji">{CUISINE_EMOJI[meal.cuisine] ?? '🍽️'}</span>
                     <span className="meal-type-badge">{meal.type}</span>

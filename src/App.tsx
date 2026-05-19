@@ -6,9 +6,10 @@ import WorkoutPlan from './components/WorkoutPlan';
 import MealPlan from './components/MealPlan';
 import Journal from './components/Journal';
 import Progress from './components/Progress';
+import Profiles from './components/Profiles';
 import Auth from './components/Auth';
 
-type Tab = 'dashboard' | 'workouts' | 'meals' | 'journal' | 'progress';
+type Tab = 'dashboard' | 'workouts' | 'meals' | 'journal' | 'progress' | 'profiles';
 
 const AppInner: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -33,6 +34,7 @@ const AppInner: React.FC = () => {
       case 'meals': return <MealPlan />;
       case 'journal': return <Journal />;
       case 'progress': return <Progress />;
+      case 'profiles': return <Profiles />;
     }
   };
 
