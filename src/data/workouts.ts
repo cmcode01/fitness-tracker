@@ -257,11 +257,16 @@ export const getExerciseVideoUrl = (exercise: Exercise): string => {
  * Returns a tailored injury modification note for an exercise based on the
  * free-text health concerns / injuries the user has reported in their profile.
  * Returns null when no health concerns are on file.
+ *
+ * NOTE: intentionally does NOT use exercise.aclModification — that field
+ * contains ACL-specific raw text; this function writes fresh guidance keyed
+ * to the actual reported injury and exercise category.
  */
 export function getInjuryModification(exercise: Exercise, healthConcerns: string): string | null {
   if (!healthConcerns?.trim()) return null;
 
   const lower = healthConcerns.toLowerCase();
+  const cat   = exercise.category;
 
   const hasKnee     = /\b(acl|knee|mcl|pcl|meniscus|patell|kneecap|ligament)\b/.test(lower);
   const hasBack     = /\b(back|spine|lumbar|disc|herniat|sciatica|vertebr)\b/.test(lower);
@@ -272,67 +277,110 @@ export function getInjuryModification(exercise: Exercise, healthConcerns: string
 
   const parts: string[] = [];
 
+  /* ── Knee injury ─────────────────────────────────────────────────── */
   if (hasKnee) {
-    parts.push(`🦵 Knee / ACL: ${exercise.aclModification}`);
+    const mod: Record<Exercise['category'], string> = {
+      lower:
+        'Keep knee bend under 90° and move at a slow, controlled pace. Avoid sudden twisting or pivoting of the joint. Use a wall or chair for balance on single-leg variations. Stop if you feel pain, swelling, or instability.',
+      upper:
+        'Minimal knee stress — safe as-is. Opt for a seated position to eliminate any standing load on the knee.',
+      core:
+        'Floor-based core work is low-impact on the knee. Use a well-padded mat; avoid resting directly on a sore knee. Forearm plank is preferred over a kneeling position.',
+      cardio:
+        'Choose low-impact options: stationary bike (seat height adjusted so knee stays above 90° at bottom) or a gentle walk on flat ground. Avoid running, jumping, or stepping movements.',
+      flexibility:
+        'Move slowly and stay well within your comfortable range. Place a folded blanket or block under the knee for support. Never force the joint into full flexion or hyperextension.',
+    };
+    parts.push(`🦵 Knee: ${mod[cat] ?? 'Use slow, controlled movement and avoid deep knee flexion. Stop if pain or swelling occurs.'}`);
   }
 
+  /* ── Back injury ─────────────────────────────────────────────────── */
   if (hasBack) {
-    const backMod: Record<Exercise['category'], string> = {
-      upper:       'Maintain neutral spine; avoid excessive forward lean. Use a seated position if standing causes discomfort.',
-      lower:       'Keep lower back flat on the floor for all lying exercises. Avoid hyperextension of the lumbar spine. Stop if back pain radiates down the leg.',
-      core:        'Prioritise gentle bracing (dead bug, bird dog) over flexion-heavy moves. Avoid full sit-ups or crunches.',
-      cardio:      'Upright seated bike is preferred. Avoid high-impact options if back pain worsens. Keep pace moderate.',
-      flexibility: 'Move into stretches slowly and avoid rounding the lower back. Use a folded blanket under hips for floor poses.',
+    const mod: Record<Exercise['category'], string> = {
+      upper:
+        'Maintain a neutral spine throughout — avoid rounding or arching the lower back. Prefer a seated position over standing if you feel lumbar strain.',
+      lower:
+        'Keep your lower back pressed gently into the mat for all floor exercises. Avoid hyperextending the lumbar spine at the top of hip movements. Stop if pain radiates down the leg.',
+      core:
+        'Focus on gentle bracing and anti-rotation movements (dead bug, bird dog). Skip any exercise that requires lumbar flexion under load (e.g. sit-ups, crunches).',
+      cardio:
+        'An upright seated bike is the safest option. Keep the pace moderate and avoid hunching forward. Stop if back pain increases during the session.',
+      flexibility:
+        'Enter stretches slowly and never pull into a position that causes sharp back pain. Support the lower back with a rolled towel or blanket during floor poses.',
     };
-    parts.push(`🔙 Back: ${backMod[exercise.category] ?? 'Maintain neutral spine throughout; reduce range of motion if back pain occurs.'}`);
+    parts.push(`🔙 Back: ${mod[cat] ?? 'Maintain neutral spine; reduce range of motion if back pain increases.'}`);
   }
 
+  /* ── Shoulder injury ─────────────────────────────────────────────── */
   if (hasShoulder) {
-    const shoulderMod: Record<Exercise['category'], string> = {
-      upper:       'Reduce range of motion — do not raise arms above shoulder height if painful. Lower the weight and prioritise pain-free movement. Skip all overhead press variations if active impingement is present.',
-      lower:       'Minimal shoulder load — safe as-is. Avoid leaning on the affected shoulder for support.',
-      core:        'Avoid weight-bearing through the shoulder (e.g. full plank). Use forearm plank as default.',
-      cardio:      'Choose seated bike over elliptical to avoid shoulder involvement. Keep arm swing relaxed on walking.',
-      flexibility: 'Avoid reaching above shoulder height. Focus on gentle chest-opener stretches and thoracic mobility.',
+    const mod: Record<Exercise['category'], string> = {
+      upper:
+        'Work within a pain-free range only — do not raise arms above shoulder height if it causes discomfort. Use lighter resistance and prioritise slow, controlled movement. Skip overhead pressing if active pain is present.',
+      lower:
+        'Shoulder load is minimal here — safe as-is. Avoid using the affected shoulder as a support point.',
+      core:
+        'Use a forearm plank instead of a full-arm plank to remove shoulder loading. Avoid any exercise where the shoulder bears body weight.',
+      cardio:
+        'Prefer the seated stationary bike to keep arms at a relaxed, low position. On walking, keep arm swing easy and avoid swinging above chest height.',
+      flexibility:
+        'Avoid reaching overhead or behind the back beyond your comfortable range. Focus on gentle chest-opener and thoracic mobility stretches.',
     };
-    parts.push(`💪 Shoulder: ${shoulderMod[exercise.category] ?? 'Minimise overhead loading; stop if shoulder pain occurs.'}`);
+    parts.push(`💪 Shoulder: ${mod[cat] ?? 'Avoid overhead loading; work within a pain-free range of motion.'}`);
   }
 
+  /* ── Hip injury ──────────────────────────────────────────────────── */
   if (hasHip) {
-    const hipMod: Record<Exercise['category'], string> = {
-      lower:       'Avoid deep hip flexion and forced rotation. Keep all movements within a pain-free range. Stop if you feel clicking, locking, or sharp pain in the hip joint.',
-      core:        'Avoid exercises that aggressively load the hip flexors (e.g. raised-leg movements). Modify bird dog by limiting hip extension range.',
-      upper:       'Hip load is minimal — safe as-is.',
-      cardio:      'Prefer bike over elliptical. Avoid high-step or stride patterns that stress the hip joint.',
-      flexibility: 'Go slowly into hip-opening poses (pigeon, figure-four). Never force the range of motion.',
+    const mod: Record<Exercise['category'], string> = {
+      lower:
+        'Avoid deep hip flexion and forced rotation. Keep all movements within a comfortable, pain-free range. Stop immediately if you feel clicking, catching, or sharp pain in the hip joint.',
+      core:
+        'Limit hip flexor loading — avoid raised-leg exercises. Reduce the hip extension range on bird dog if it triggers discomfort.',
+      upper:
+        'Hip load is negligible here — safe as-is.',
+      cardio:
+        'Prefer the bike over the elliptical to reduce hip rotation stress. Avoid high step-height or long stride patterns.',
+      flexibility:
+        'Move into hip-opening poses gradually and never force the range of motion. Use props (blocks, blankets) to reduce the demand on the hip joint.',
     };
-    parts.push(`🦷 Hip: ${hipMod[exercise.category] ?? 'Monitor for hip pain; reduce range of motion as needed.'}`);
+    parts.push(`🦷 Hip: ${mod[cat] ?? 'Keep movements within a pain-free range; stop if you feel clicking or sharp hip pain.'}`);
   }
 
+  /* ── Ankle injury ────────────────────────────────────────────────── */
   if (hasAnkle) {
-    const ankleMod: Record<Exercise['category'], string> = {
-      lower:       'Minimise full weight-bearing on the affected ankle. Use a wall or chair for balance on single-leg exercises. Skip calf raises on the affected leg until cleared by your PT.',
-      cardio:      'Use a seated stationary bike for zero ankle load. Avoid walking/elliptical programmes until the ankle is stable.',
-      upper:       'No ankle load — safe as-is.',
-      core:        'Ankle load is negligible in floor-based core work — safe as-is.',
-      flexibility: 'Avoid dorsiflexion-heavy stretches (e.g. deep lunges) until cleared. Seated hamstring stretches are safe.',
+    const mod: Record<Exercise['category'], string> = {
+      lower:
+        'Reduce full weight-bearing on the affected ankle. Use a wall or chair for balance on single-leg exercises. Avoid calf raises on the affected side until your PT clears you.',
+      cardio:
+        'Use a seated stationary bike to keep ankle load at zero. Hold off on walking or elliptical programmes until the ankle is stable.',
+      upper:
+        'No ankle involvement — safe as-is.',
+      core:
+        'Floor-based core exercises place no stress on the ankle — safe as-is.',
+      flexibility:
+        'Avoid deep dorsiflexion stretches (e.g. standing calf stretches against a wall if painful). Seated hamstring and hip stretches are safe.',
     };
-    parts.push(`🦶 Ankle: ${ankleMod[exercise.category] ?? 'Minimise ankle loading; use support as needed.'}`);
+    parts.push(`🦶 Ankle: ${mod[cat] ?? 'Minimise ankle loading and use a support if needed.'}`);
   }
 
+  /* ── Wrist injury ────────────────────────────────────────────────── */
   if (hasWrist) {
-    const wristMod: Record<Exercise['category'], string> = {
-      upper:       'Use wrist wraps or a neutral grip where possible. Avoid push-up positions if wrist pain occurs — resistance bands reduce wrist stress compared to dumbbells. Keep wrists stacked over elbows.',
-      core:        'Use forearm plank instead of hand plank. For bird dog, make a fist or use a push-up handle.',
-      lower:       'Wrist load is minimal — safe as-is.',
-      cardio:      'Grip handles lightly on the bike or elliptical.',
-      flexibility: 'Avoid weight-bearing on open palms; use fists or forearms for any floor contact.',
+    const mod: Record<Exercise['category'], string> = {
+      upper:
+        'Use a neutral grip and wrist wraps where possible. Resistance bands reduce wrist stress compared to dumbbells. Avoid push-up positions if they cause wrist pain — use fists or push-up handles instead.',
+      core:
+        'Use a forearm plank rather than a high plank. For bird dog, form a fist instead of an open hand to reduce wrist extension.',
+      lower:
+        'Wrist involvement is minimal — safe as-is.',
+      cardio:
+        'Hold bike or elliptical handles lightly; avoid gripping tightly.',
+      flexibility:
+        'Avoid bearing weight through open palms. Use fists or forearms for any floor contact.',
     };
-    parts.push(`✋ Wrist: ${wristMod[exercise.category] ?? 'Avoid putting excessive load through the wrist; use neutral grip where possible.'}`);
+    parts.push(`✋ Wrist: ${mod[cat] ?? 'Avoid excessive load through the wrist; use neutral grip throughout.'}`);
   }
 
+  /* ── Unrecognised concern ────────────────────────────────────────── */
   if (parts.length === 0) {
-    // Health concerns exist but none of the keywords matched — show a general reminder
     const snippet = healthConcerns.length > 70 ? healthConcerns.slice(0, 70) + '…' : healthConcerns;
     return `⚠️ You have reported: "${snippet}". Listen to your body and stop if this exercise aggravates your condition. Consult your physical therapist for personalised modifications.`;
   }
