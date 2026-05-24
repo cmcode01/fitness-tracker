@@ -247,6 +247,99 @@ export const getPhaseWorkouts = (phase: number) => workoutDays.filter(w => w.pha
 export const getTodayWorkout = (phase: number, dayOfWeek: number) => workoutDays.find(w => w.phase === phase && w.dayOfWeek === dayOfWeek);
 export const getExerciseById = (id: string) => exercises.find(e => e.id === id);
 
+/** Returns a YouTube search URL for a how-to tutorial of the given exercise. */
+export const getExerciseVideoUrl = (exercise: Exercise): string => {
+  const query = encodeURIComponent(`how to do ${exercise.name} exercise proper form`);
+  return `https://www.youtube.com/results?search_query=${query}`;
+};
+
+/**
+ * Returns a tailored injury modification note for an exercise based on the
+ * free-text health concerns / injuries the user has reported in their profile.
+ * Returns null when no health concerns are on file.
+ */
+export function getInjuryModification(exercise: Exercise, healthConcerns: string): string | null {
+  if (!healthConcerns?.trim()) return null;
+
+  const lower = healthConcerns.toLowerCase();
+
+  const hasKnee     = /\b(acl|knee|mcl|pcl|meniscus|patell|kneecap|ligament)\b/.test(lower);
+  const hasBack     = /\b(back|spine|lumbar|disc|herniat|sciatica|vertebr)\b/.test(lower);
+  const hasShoulder = /\b(shoulder|rotator|cuff|impingement)\b/.test(lower);
+  const hasHip      = /\b(hip|labrum|bursitis|piriformis)\b/.test(lower);
+  const hasAnkle    = /\b(ankle|achilles|plantar)\b/.test(lower);
+  const hasWrist    = /\b(wrist|carpal|tunnel)\b/.test(lower);
+
+  const parts: string[] = [];
+
+  if (hasKnee) {
+    parts.push(`🦵 Knee / ACL: ${exercise.aclModification}`);
+  }
+
+  if (hasBack) {
+    const backMod: Record<Exercise['category'], string> = {
+      upper:       'Maintain neutral spine; avoid excessive forward lean. Use a seated position if standing causes discomfort.',
+      lower:       'Keep lower back flat on the floor for all lying exercises. Avoid hyperextension of the lumbar spine. Stop if back pain radiates down the leg.',
+      core:        'Prioritise gentle bracing (dead bug, bird dog) over flexion-heavy moves. Avoid full sit-ups or crunches.',
+      cardio:      'Upright seated bike is preferred. Avoid high-impact options if back pain worsens. Keep pace moderate.',
+      flexibility: 'Move into stretches slowly and avoid rounding the lower back. Use a folded blanket under hips for floor poses.',
+    };
+    parts.push(`🔙 Back: ${backMod[exercise.category] ?? 'Maintain neutral spine throughout; reduce range of motion if back pain occurs.'}`);
+  }
+
+  if (hasShoulder) {
+    const shoulderMod: Record<Exercise['category'], string> = {
+      upper:       'Reduce range of motion — do not raise arms above shoulder height if painful. Lower the weight and prioritise pain-free movement. Skip all overhead press variations if active impingement is present.',
+      lower:       'Minimal shoulder load — safe as-is. Avoid leaning on the affected shoulder for support.',
+      core:        'Avoid weight-bearing through the shoulder (e.g. full plank). Use forearm plank as default.',
+      cardio:      'Choose seated bike over elliptical to avoid shoulder involvement. Keep arm swing relaxed on walking.',
+      flexibility: 'Avoid reaching above shoulder height. Focus on gentle chest-opener stretches and thoracic mobility.',
+    };
+    parts.push(`💪 Shoulder: ${shoulderMod[exercise.category] ?? 'Minimise overhead loading; stop if shoulder pain occurs.'}`);
+  }
+
+  if (hasHip) {
+    const hipMod: Record<Exercise['category'], string> = {
+      lower:       'Avoid deep hip flexion and forced rotation. Keep all movements within a pain-free range. Stop if you feel clicking, locking, or sharp pain in the hip joint.',
+      core:        'Avoid exercises that aggressively load the hip flexors (e.g. raised-leg movements). Modify bird dog by limiting hip extension range.',
+      upper:       'Hip load is minimal — safe as-is.',
+      cardio:      'Prefer bike over elliptical. Avoid high-step or stride patterns that stress the hip joint.',
+      flexibility: 'Go slowly into hip-opening poses (pigeon, figure-four). Never force the range of motion.',
+    };
+    parts.push(`🦷 Hip: ${hipMod[exercise.category] ?? 'Monitor for hip pain; reduce range of motion as needed.'}`);
+  }
+
+  if (hasAnkle) {
+    const ankleMod: Record<Exercise['category'], string> = {
+      lower:       'Minimise full weight-bearing on the affected ankle. Use a wall or chair for balance on single-leg exercises. Skip calf raises on the affected leg until cleared by your PT.',
+      cardio:      'Use a seated stationary bike for zero ankle load. Avoid walking/elliptical programmes until the ankle is stable.',
+      upper:       'No ankle load — safe as-is.',
+      core:        'Ankle load is negligible in floor-based core work — safe as-is.',
+      flexibility: 'Avoid dorsiflexion-heavy stretches (e.g. deep lunges) until cleared. Seated hamstring stretches are safe.',
+    };
+    parts.push(`🦶 Ankle: ${ankleMod[exercise.category] ?? 'Minimise ankle loading; use support as needed.'}`);
+  }
+
+  if (hasWrist) {
+    const wristMod: Record<Exercise['category'], string> = {
+      upper:       'Use wrist wraps or a neutral grip where possible. Avoid push-up positions if wrist pain occurs — resistance bands reduce wrist stress compared to dumbbells. Keep wrists stacked over elbows.',
+      core:        'Use forearm plank instead of hand plank. For bird dog, make a fist or use a push-up handle.',
+      lower:       'Wrist load is minimal — safe as-is.',
+      cardio:      'Grip handles lightly on the bike or elliptical.',
+      flexibility: 'Avoid weight-bearing on open palms; use fists or forearms for any floor contact.',
+    };
+    parts.push(`✋ Wrist: ${wristMod[exercise.category] ?? 'Avoid putting excessive load through the wrist; use neutral grip where possible.'}`);
+  }
+
+  if (parts.length === 0) {
+    // Health concerns exist but none of the keywords matched — show a general reminder
+    const snippet = healthConcerns.length > 70 ? healthConcerns.slice(0, 70) + '…' : healthConcerns;
+    return `⚠️ You have reported: "${snippet}". Listen to your body and stop if this exercise aggravates your condition. Consult your physical therapist for personalised modifications.`;
+  }
+
+  return parts.join('\n\n');
+}
+
 export const phaseInfo = {
   1: { name: 'Foundation', weeks: '1–6', focus: 'Joint stability, mobility, and building exercise habits', intensity: 'Low', color: '#3CAE63' },
   2: { name: 'Strength Building', weeks: '7–14', focus: 'Progressive strength, increased cardio, walking outdoors', intensity: 'Moderate', color: '#3B82F6' },

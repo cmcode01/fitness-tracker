@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { exercises, workoutDays, phaseInfo } from '../data/workouts';
+import { exercises, workoutDays, phaseInfo, getInjuryModification, getExerciseVideoUrl } from '../data/workouts';
 import { FitnessGoal, WorkoutPhase } from '../types';
 import { DAY_SHORT, todayStr, GOAL_LABELS } from '../utils/calculations';
 
@@ -182,7 +182,34 @@ const WorkoutPlan: React.FC = () => {
                     {selectedExercise?.id === id && (
                       <div className="exercise-detail">
                         <div className="exercise-section"><strong>How to do it:</strong><p>{ex.instructions}</p></div>
-                        <div className="exercise-section"><strong>💡 Modification Notes:</strong><p>{ex.aclModification}</p></div>
+
+                        {/* Video tutorial link */}
+                        <div className="exercise-section">
+                          <a
+                            href={getExerciseVideoUrl(ex)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="video-tutorial-link"
+                            onClick={e => e.stopPropagation()}
+                          >
+                            ▶ Watch Tutorial
+                          </a>
+                        </div>
+
+                        {/* Dynamic injury modification */}
+                        {(() => {
+                          const mod = getInjuryModification(ex, activeProfile?.healthConcerns ?? '');
+                          if (!mod) return null;
+                          return (
+                            <div className="exercise-section injury-note">
+                              <strong>🩹 Injury Modification:</strong>
+                              {mod.split('\n\n').map((line, i) => (
+                                <p key={i}>{line}</p>
+                              ))}
+                            </div>
+                          );
+                        })()}
+
                         <div className="exercise-section"><strong>Equipment:</strong> {ex.equipment.join(', ')}</div>
                         <div className="exercise-section"><strong>Target muscles:</strong> {ex.targetMuscles.join(', ')}</div>
                       </div>

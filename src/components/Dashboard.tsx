@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { getWeeklyMealPlan } from '../data/meals';
-import { getTodayWorkout, getExerciseById, phaseInfo } from '../data/workouts';
+import { getTodayWorkout, getExerciseById, phaseInfo, getInjuryModification, getExerciseVideoUrl } from '../data/workouts';
 import { Meal } from '../types';
 import {
   calculateBMR, calculateTDEE, calculateTargetCalories,
@@ -338,7 +338,34 @@ const Dashboard: React.FC<Props> = ({ setActiveTab }) => {
                       {open && (
                         <div className="exercise-detail">
                           <div className="exercise-section"><strong>How to do it:</strong><p>{ex.instructions}</p></div>
-                          <div className="exercise-section acl-note"><strong>🦵 ACL Modification:</strong><p>{ex.aclModification}</p></div>
+
+                          {/* Video tutorial link */}
+                          <div className="exercise-section">
+                            <a
+                              href={getExerciseVideoUrl(ex)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="video-tutorial-link"
+                              onClick={e => e.stopPropagation()}
+                            >
+                              ▶ Watch Tutorial
+                            </a>
+                          </div>
+
+                          {/* Dynamic injury modification */}
+                          {(() => {
+                            const mod = getInjuryModification(ex, profile?.healthConcerns ?? '');
+                            if (!mod) return null;
+                            return (
+                              <div className="exercise-section injury-note">
+                                <strong>🩹 Injury Modification:</strong>
+                                {mod.split('\n\n').map((line, i) => (
+                                  <p key={i}>{line}</p>
+                                ))}
+                              </div>
+                            );
+                          })()}
+
                           <div className="exercise-section"><strong>Equipment:</strong> {ex.equipment.join(', ')}</div>
                         </div>
                       )}

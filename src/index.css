@@ -482,6 +482,17 @@ ul, ol { list-style: none; }
 .exercise-section { font-size: 13px; color: var(--gray-700); }
 .exercise-section p { margin-top: 3px; color: var(--gray-600); }
 .acl-note { background: rgba(236,72,153,.06); padding: 8px; border-radius: var(--radius-sm); }
+.injury-note { background: rgba(245,158,11,.08); border-left: 3px solid #f59e0b; padding: 8px 10px; border-radius: var(--radius-sm); }
+.injury-note strong { color: #b45309; }
+.injury-note p { margin-top: 4px; white-space: pre-line; }
+.video-tutorial-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: var(--purple); text-decoration: none;
+  background: var(--purple-light); padding: 4px 12px;
+  border-radius: 99px; transition: background .15s;
+}
+.video-tutorial-link:hover { background: rgba(139,92,246,.2); }
 
 /* ---------- Meal Plan ---------- */
 .restriction-banner {
