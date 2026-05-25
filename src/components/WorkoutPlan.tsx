@@ -183,18 +183,17 @@ const WorkoutPlan: React.FC = () => {
                       <div className="exercise-detail">
                         <div className="exercise-section"><strong>How to do it:</strong><p>{ex.instructions}</p></div>
 
-                        {/* Video tutorial link */}
-                        <div className="exercise-section">
-                          <a
-                            href={getExerciseVideoUrl(ex)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="video-tutorial-link"
-                            onClick={e => e.stopPropagation()}
-                          >
-                            ▶ Watch Tutorial
-                          </a>
-                        </div>
+                        {/* Video tutorial embed */}
+                        {ex.videoId && (
+                          <div className="exercise-video-wrap" onClick={e => e.stopPropagation()}>
+                            <iframe
+                              src={getExerciseVideoUrl(ex)}
+                              title={`${ex.name} tutorial`}
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          </div>
+                        )}
 
                         {/* Dynamic injury modification */}
                         {(() => {

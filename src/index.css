@@ -485,14 +485,14 @@ ul, ol { list-style: none; }
 .injury-note { background: rgba(245,158,11,.08); border-left: 3px solid #f59e0b; padding: 8px 10px; border-radius: var(--radius-sm); }
 .injury-note strong { color: #b45309; }
 .injury-note p { margin-top: 4px; white-space: pre-line; }
-.video-tutorial-link {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 600;
-  color: var(--purple); text-decoration: none;
-  background: var(--purple-light); padding: 4px 12px;
-  border-radius: 99px; transition: background .15s;
+.exercise-video-wrap {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: var(--radius-sm); overflow: hidden;
+  background: #000;
 }
-.video-tutorial-link:hover { background: rgba(139,92,246,.2); }
+.exercise-video-wrap iframe {
+  position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+}
 
 /* ---------- Meal Plan ---------- */
 .restriction-banner {

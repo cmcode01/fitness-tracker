@@ -34,6 +34,7 @@ export interface Exercise {
   aclModification: string;
   targetMuscles: string[];
   difficulty: 1 | 2 | 3;
+  videoId?: string;
 }
 
 export interface WorkoutDay {

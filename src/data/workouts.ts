@@ -8,6 +8,7 @@ export const exercises: Exercise[] = [
     instructions: 'Anchor band at chest height. Hold with both hands, step back to create tension. Pull elbows back, squeezing shoulder blades together. Return slowly.',
     aclModification: 'Perform seated or standing — no knee stress.',
     targetMuscles: ['upper back', 'rear deltoids', 'biceps'], difficulty: 1,
+    videoId: 'LSkyinhmA8k', // How To Do A Resistance Band Row
   },
   {
     id: 'e02', name: 'Dumbbell Shoulder Press', category: 'upper', sets: 3, reps: '10–12',
@@ -15,6 +16,7 @@ export const exercises: Exercise[] = [
     instructions: 'Seated or standing. Hold dumbbells at shoulder height, elbows bent. Press straight overhead until arms are extended, then lower slowly.',
     aclModification: 'Perform seated to reduce knee load.',
     targetMuscles: ['deltoids', 'triceps', 'upper trapezius'], difficulty: 2,
+    videoId: 'fuQpuu--bMI', // Seated Dumbbell Shoulder Press Guide
   },
   {
     id: 'e03', name: 'Lateral Raises', category: 'upper', sets: 3, reps: '12–15',
@@ -22,6 +24,7 @@ export const exercises: Exercise[] = [
     instructions: 'Hold light dumbbells at sides. Raise arms out to sides to shoulder height, slight bend in elbows. Lower slowly over 3 counts.',
     aclModification: 'No knee involvement — safe as-is.',
     targetMuscles: ['medial deltoids', 'upper trapezius'], difficulty: 1,
+    videoId: 'nnH63icHYXY', // Dumbbell Lateral Raise | Proper Form Tutorial
   },
   {
     id: 'e04', name: 'Bicep Curls', category: 'upper', sets: 3, reps: '12–15',
@@ -29,6 +32,7 @@ export const exercises: Exercise[] = [
     instructions: 'Stand or sit with dumbbells, palms forward. Curl weight toward shoulders, squeeze at top, lower slowly.',
     aclModification: 'Perform seated if standing causes knee discomfort.',
     targetMuscles: ['biceps'], difficulty: 1,
+    videoId: 'XE_pHwbst04', // Bicep Curls — DUMBBELL FORM & TECHNIQUE
   },
   {
     id: 'e05', name: 'Tricep Overhead Extension', category: 'upper', sets: 3, reps: '12–15',
@@ -36,6 +40,7 @@ export const exercises: Exercise[] = [
     instructions: 'Hold one dumbbell overhead with both hands. Lower behind head by bending elbows, keeping upper arms close to ears. Press back up.',
     aclModification: 'Perform seated — zero knee stress.',
     targetMuscles: ['triceps'], difficulty: 1,
+    videoId: 'X-iV-cG8cYs', // How To PROPERLY Overhead Dumbbell Tricep Extension
   },
   {
     id: 'e06', name: 'Wall Push-Ups (Progression to Floor)', category: 'upper', sets: 3, reps: '10–15',
@@ -43,6 +48,7 @@ export const exercises: Exercise[] = [
     instructions: 'Phase 1–2: hands on wall, lean in, push off wall. Phase 3–4: progress to incline then full floor push-ups.',
     aclModification: 'No knee involvement when standing. For floor version, knees on soft mat if needed.',
     targetMuscles: ['chest', 'triceps', 'front deltoids'], difficulty: 1,
+    videoId: 'b01muAD0_NI', // How to Do Wall Push Ups Correctly
   },
   {
     id: 'e07', name: 'Dumbbell Chest Press (Floor)', category: 'upper', sets: 3, reps: '10–12',
@@ -50,6 +56,7 @@ export const exercises: Exercise[] = [
     instructions: 'Lie on back on floor, knees bent, feet flat. Press dumbbells from chest to fully extended, then lower slowly.',
     aclModification: 'Floor press avoids bench — knees in comfortable position.',
     targetMuscles: ['pectorals', 'triceps', 'anterior deltoid'], difficulty: 2,
+    videoId: 'AqYFvc9t_vU', // How To PROPERLY Dumbbell Floor Press
   },
   {
     id: 'e08', name: 'Bent-Over Dumbbell Rows', category: 'upper', sets: 3, reps: '10–12',
@@ -57,14 +64,16 @@ export const exercises: Exercise[] = [
     instructions: 'Hinge at hips, spine neutral, soft bend in knees. Hold dumbbell, pull elbow toward hip. Alternate arms.',
     aclModification: 'Use a chair or table for support; avoid deep knee bend.',
     targetMuscles: ['lats', 'rhomboids', 'biceps'], difficulty: 2,
+    videoId: '6TSP1TRMUzs', // How To: Dumbbell Bent-Over Row
   },
-  // ── LOWER BODY (ACL-SAFE) ───────────────────────────────────────────────────
+  // ── LOWER BODY ──────────────────────────────────────────────────────────────
   {
     id: 'e09', name: 'Glute Bridges', category: 'lower', sets: 3, reps: '15–20',
     equipment: ['yoga mat'],
     instructions: 'Lie on back, knees bent, feet flat. Squeeze glutes and lift hips until body forms straight line. Hold 2 sec, lower slowly. This is your cornerstone exercise.',
     aclModification: 'Ideal for ACL rehab — minimal knee shear, max glute activation.',
     targetMuscles: ['glutes', 'hamstrings', 'lower back'], difficulty: 1,
+    videoId: 'wPM8icPu6H8', // How To Do A Glute Bridge | The Right Way | Well+Good
   },
   {
     id: 'e10', name: 'Single-Leg Glute Bridges', category: 'lower', sets: 3, reps: '12 each leg',
@@ -72,6 +81,7 @@ export const exercises: Exercise[] = [
     instructions: 'Same as glute bridge, but extend one leg straight. Drive through the planted heel. Progress by adding a weight on hip.',
     aclModification: 'Increases glute demand without excessive knee torque. Start bilaterally first.',
     targetMuscles: ['glutes', 'hamstrings', 'core'], difficulty: 2,
+    videoId: 'VUl8R0kn6v4', // Single Leg Glute Bridge Tutorial - Proper Form and Technique
   },
   {
     id: 'e11', name: 'Clamshells with Band', category: 'lower', sets: 3, reps: '15–20 each side',
@@ -79,6 +89,7 @@ export const exercises: Exercise[] = [
     instructions: 'Lie on side, hips stacked, knees bent, band above knees. Keep feet together and rotate top knee open like a clam. Lower slowly.',
     aclModification: 'Excellent hip abductor strengthener — critical for knee stability and ACL protection.',
     targetMuscles: ['gluteus medius', 'hip abductors'], difficulty: 1,
+    videoId: 'ymjOGuPjOSE', // Clam Shell Exercise for Hips | Banded Clamshells
   },
   {
     id: 'e12', name: 'Lateral Band Walks', category: 'lower', sets: 3, reps: '15 steps each direction',
@@ -86,6 +97,7 @@ export const exercises: Exercise[] = [
     instructions: 'Place band around ankles or just above knees. Slight squat position. Step sideways maintaining band tension. Keep toes forward.',
     aclModification: 'Keep bend shallow (20–30°). Essential for hip stability which reduces knee stress.',
     targetMuscles: ['gluteus medius', 'hip abductors', 'quads'], difficulty: 1,
+    videoId: 'y_bqFDQZSHQ', // Lateral Band Walk | Proper Form Tutorial for Hip Stability
   },
   {
     id: 'e13', name: 'Step-Ups (Low Step)', category: 'lower', sets: 3, reps: '10–12 each leg',
@@ -93,6 +105,7 @@ export const exercises: Exercise[] = [
     instructions: 'Place one foot on low step. Push through that heel to step up. Step down slowly. Do not push off back leg. Progress step height over months.',
     aclModification: 'Start with 6-inch step. Keep knee tracking over toes. Do NOT go above 10 inches until Phase 3.',
     targetMuscles: ['quads', 'glutes', 'calves'], difficulty: 2,
+    videoId: 'vOiHvzj5XhA', // Step Up Tutorial - Proper Form and Technique
   },
   {
     id: 'e14', name: 'Terminal Knee Extensions (TKE)', category: 'lower', sets: 3, reps: '20 each leg',
@@ -100,6 +113,7 @@ export const exercises: Exercise[] = [
     instructions: 'Anchor band behind knee at the bend. Stand with slight flex. Straighten knee against band resistance. Targets the quad at end range.',
     aclModification: 'Specifically designed for ACL rehab. One of the best ACL-strengthening exercises available.',
     targetMuscles: ['quadriceps (VMO)', 'knee stabilizers'], difficulty: 1,
+    videoId: '7xG3MeoLjC0', // How to perform the banded Terminal Knee Extension (TKE)
   },
   {
     id: 'e15', name: 'Standing Hip Abduction with Band', category: 'lower', sets: 3, reps: '15–20 each side',
@@ -107,6 +121,7 @@ export const exercises: Exercise[] = [
     instructions: 'Band around ankles. Stand on one leg (hold wall). Raise other leg out to side as high as comfortable, keeping pelvis level. Lower slowly.',
     aclModification: 'Ensure standing knee has good support, no locking out.',
     targetMuscles: ['gluteus medius', 'outer thigh'], difficulty: 1,
+    videoId: '4qr26RNU3EQ', // How To Do A STANDING BANDED HIP ABDUCTION
   },
   {
     id: 'e16', name: 'Seated Leg Extensions (Band)', category: 'lower', sets: 3, reps: '15 each leg',
@@ -114,6 +129,7 @@ export const exercises: Exercise[] = [
     instructions: 'Sit in chair with band around ankle, anchored to chair leg. Straighten knee slowly against resistance, hold 2 sec, lower.',
     aclModification: 'Control speed carefully. Stop if you feel anterior knee pain. Great for quad strengthening with low risk.',
     targetMuscles: ['quadriceps'], difficulty: 1,
+    videoId: 'LyP2EdSevhc', // Seated Leg extensions with exercise band: Technique video
   },
   {
     id: 'e17', name: 'Standing Calf Raises', category: 'lower', sets: 3, reps: '20–25',
@@ -121,6 +137,7 @@ export const exercises: Exercise[] = [
     instructions: 'Stand near wall. Rise onto toes, hold 2 sec, lower. Progress to single-leg, then add weight.',
     aclModification: 'No knee stress. Calf strength helps absorb ground impact and protects knees during walking and hiking.',
     targetMuscles: ['gastrocnemius', 'soleus'], difficulty: 1,
+    videoId: '97NbelB5yvQ', // How to do Standing Calf Raises: Proper Form
   },
   // ── CORE ────────────────────────────────────────────────────────────────────
   {
@@ -129,6 +146,7 @@ export const exercises: Exercise[] = [
     instructions: 'Lie on back, arms extended to ceiling, knees at 90°. Slowly lower opposite arm and leg to just above floor, exhale and brace core. Return and switch.',
     aclModification: 'Pure core — no knee stress. Prioritize this for spine stability.',
     targetMuscles: ['transverse abdominis', 'lower back', 'hip flexors'], difficulty: 2,
+    videoId: 'bxn9FBrt4-A', // How to do a Dead Bug | Proper Form & Technique | NASM
   },
   {
     id: 'e19', name: 'Bird Dog', category: 'core', sets: 3, reps: '10 each side',
@@ -136,6 +154,7 @@ export const exercises: Exercise[] = [
     instructions: 'On hands and knees. Extend opposite arm and leg straight out. Hold 3 sec, return slowly. Keep hips perfectly level.',
     aclModification: 'Minimal knee loading in this position. Use a padded mat.',
     targetMuscles: ['glutes', 'lower back', 'core stabilizers'], difficulty: 1,
+    videoId: 'ZdAHe9_HeEw', // How to do a Bird Dog | Proper Form & Technique | NASM
   },
   {
     id: 'e20', name: 'Plank (Build from 20s)', category: 'core', sets: 3, duration: '20–60 seconds',
@@ -143,6 +162,7 @@ export const exercises: Exercise[] = [
     instructions: 'Forearms on floor, body in straight line from head to heels. Brace abs, squeeze glutes. Start at 20 seconds. Add 5 seconds each week.',
     aclModification: 'Forearm plank is fine. Avoid putting body weight through bent knees.',
     targetMuscles: ['entire core', 'shoulders', 'glutes'], difficulty: 2,
+    videoId: 'BQu26ABuVS0', // How to Plank Properly for Beginners
   },
   {
     id: 'e21', name: 'Side Plank', category: 'core', sets: 3, duration: '20–40 seconds each side',
@@ -150,6 +170,7 @@ export const exercises: Exercise[] = [
     instructions: 'Lie on side, forearm under shoulder. Lift hips to form straight line. Engage obliques. Modified version: keep knees on floor.',
     aclModification: 'No direct knee stress. Modified (knees down) version avoids all knee load.',
     targetMuscles: ['obliques', 'hip abductors', 'shoulder stabilizers'], difficulty: 2,
+    videoId: '44ND4bOB-T0', // How to do a Side Plank | Proper Form & Technique | NASM
   },
   {
     id: 'e22', name: 'Russian Twists (Seated)', category: 'core', sets: 3, reps: '20 total (10 each side)',
@@ -157,6 +178,7 @@ export const exercises: Exercise[] = [
     instructions: 'Sit with knees bent at 90°, lean back slightly, hands clasped. Rotate torso side to side touching floor. Add light dumbbell in Phase 3.',
     aclModification: 'Keep feet flat on floor rather than elevated.',
     targetMuscles: ['obliques', 'rectus abdominis'], difficulty: 2,
+    videoId: 'wkD8rjkodUI', // How to Do a Russian Twist | Ab Workout
   },
   {
     id: 'e23', name: 'Pelvic Tilts', category: 'core', sets: 2, reps: '15–20',
@@ -164,6 +186,7 @@ export const exercises: Exercise[] = [
     instructions: 'Lie on back, knees bent. Gently flatten lower back into floor by tightening abs. Hold 5 sec, release. Subtle but foundational.',
     aclModification: 'Perfect ACL-safe exercise. Also helps with lower back pain.',
     targetMuscles: ['transverse abdominis', 'lower back'], difficulty: 1,
+    videoId: 'jFHSB245fcM', // Pelvic Tilt Exercise For Low Back Pain
   },
   // ── CARDIO & FLEXIBILITY ────────────────────────────────────────────────────
   {
@@ -173,6 +196,7 @@ export const exercises: Exercise[] = [
     instructions: 'Maintain moderate pace (RPE 5–6 out of 10). Resistance low-medium. Elliptical: use handrails and keep upright posture.',
     aclModification: 'The gold standard for ACL-safe cardio. Minimal joint shear. Preferred over treadmill in Phase 1–2.',
     targetMuscles: ['cardiovascular system', 'quads', 'hamstrings', 'glutes'], difficulty: 1,
+    videoId: 'jhPqTyejY_0', // How to Correctly & Effectively Use Your Exercise Bike
   },
   {
     id: 'e25', name: 'Walking Program (Progressive)', category: 'cardio',
@@ -181,6 +205,7 @@ export const exercises: Exercise[] = [
     instructions: 'Flat terrain Phases 1–2. Introduce gentle hills in Phase 3. Hiking trails in Phase 4. Always warm up with 5-min gentle walk.',
     aclModification: 'Avoid uneven terrain until Phase 3. Wear proper knee-supportive footwear. Stop if acute knee pain occurs.',
     targetMuscles: ['cardiovascular', 'legs', 'core'], difficulty: 1,
+    videoId: 'P25RwG-OGlU', // Physical Therapist Shows How To Walk Correctly
   },
   {
     id: 'e26', name: 'Seated Resistance Band HIIT Circuit', category: 'cardio',
@@ -189,6 +214,7 @@ export const exercises: Exercise[] = [
     instructions: 'Alternate 40s effort / 20s rest: arm circles, seated rows, overhead press, bicep curls, seated march. Keeps heart rate up with zero knee impact.',
     aclModification: 'All exercises done seated — zero knee impact. Great Phase 1–2 option.',
     targetMuscles: ['full body', 'cardiovascular system'], difficulty: 2,
+    videoId: 'sbzR-daGhag', // Upper Body Seated Resistance Band Exercises
   },
   {
     id: 'e27', name: 'Yoga Flow (Gentle)', category: 'flexibility',
@@ -197,6 +223,7 @@ export const exercises: Exercise[] = [
     instructions: "Focus on: Cat-Cow, Child's Pose, Seated Forward Fold, Pigeon Pose (gentle), Supine Twist, Warrior I (modified). Hold each pose 30–60 sec.",
     aclModification: "Avoid deep knee flexion. Modify Warrior poses to shallow knee bend.",
     targetMuscles: ['hip flexors', 'hamstrings', 'thoracic spine', 'glutes'], difficulty: 1,
+    videoId: '1VM3a2ojlEM', // 30 min Beginner Yoga - Gentle Stretch & Flow Yoga
   },
   {
     id: 'e28', name: 'Pilates Core Series', category: 'core',
@@ -205,6 +232,7 @@ export const exercises: Exercise[] = [
     instructions: 'Hundred (modified), Single Leg Stretch, Double Leg Stretch (modified), Spine Stretch Forward, Rolling Like a Ball (gentle). Emphasize breath and core engagement.',
     aclModification: 'Avoid exercises requiring deep knee bend. All lying-down exercises are safe. Great for hourglass shape.',
     targetMuscles: ['core', 'inner thighs', 'hip flexors', 'back'], difficulty: 2,
+    videoId: 'YPloqWmAT50', // Pilates Core Workout for Good Posture - Pilates for Beginners
   },
 ];
 
@@ -247,8 +275,12 @@ export const getPhaseWorkouts = (phase: number) => workoutDays.filter(w => w.pha
 export const getTodayWorkout = (phase: number, dayOfWeek: number) => workoutDays.find(w => w.phase === phase && w.dayOfWeek === dayOfWeek);
 export const getExerciseById = (id: string) => exercises.find(e => e.id === id);
 
-/** Returns a YouTube search URL for a how-to tutorial of the given exercise. */
+/** Returns a YouTube privacy-enhanced embed URL for the exercise tutorial. */
 export const getExerciseVideoUrl = (exercise: Exercise): string => {
+  if (exercise.videoId) {
+    return `https://www.youtube-nocookie.com/embed/${exercise.videoId}?rel=0&modestbranding=1`;
+  }
+  // Fallback: search URL (shouldn't be reached since all exercises have videoId)
   const query = encodeURIComponent(`how to do ${exercise.name} exercise proper form`);
   return `https://www.youtube.com/results?search_query=${query}`;
 };
