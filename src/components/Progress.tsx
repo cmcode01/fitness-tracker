@@ -9,8 +9,14 @@ import {
 } from 'recharts';
 
 const Progress: React.FC = () => {
-  const { state } = useApp();
+  const { state, activeProfile } = useApp();
   const [chartView, setChartView] = useState<'weight' | 'measurements' | 'nutrition' | 'workouts'>('weight');
+
+  // Use active profile values; fall back to USER_PROFILE defaults so charts
+  // still render even when no profile is set up yet.
+  const startWeight  = activeProfile?.startWeight  ?? USER_PROFILE.startWeight;
+  const targetWeight = activeProfile?.goalWeight   ?? USER_PROFILE.targetWeight;
+  const totalToLose  = Math.max(1, startWeight - targetWeight);
 
   const sortedWeights = [...state.weightLogs].sort((a, b) => a.date.localeCompare(b.date));
   const sortedMeasurements = [...state.measurementLogs].sort((a, b) => a.date.localeCompare(b.date));
@@ -20,7 +26,7 @@ const Progress: React.FC = () => {
   const weightData = sortedWeights.map(w => ({
     date: formatDate(w.date),
     weight: w.weight,
-    target: USER_PROFILE.targetWeight,
+    target: targetWeight,
   }));
 
   const measData = sortedMeasurements.map(m => ({
@@ -50,9 +56,9 @@ const Progress: React.FC = () => {
   }));
 
   const currentWeek = calculateCurrentWeek(state.startDate);
-  const latestWeight = sortedWeights[sortedWeights.length - 1]?.weight ?? USER_PROFILE.startWeight;
-  const lostSoFar = USER_PROFILE.startWeight - latestWeight;
-  const progressPct = Math.min(100, Math.max(0, (lostSoFar / (USER_PROFILE.startWeight - USER_PROFILE.targetWeight)) * 100));
+  const latestWeight = sortedWeights[sortedWeights.length - 1]?.weight ?? startWeight;
+  const lostSoFar    = startWeight - latestWeight;
+  const progressPct  = Math.min(100, Math.max(0, (lostSoFar / totalToLose) * 100));
 
   const likedMeals = Object.entries(state.mealFeedback)
     .filter(([, f]) => f.reaction === 'liked')
@@ -79,19 +85,19 @@ const Progress: React.FC = () => {
 
       <div className="card mb-4">
         <div className="card-header-row">
-          <span className="card-label">50-lb Journey Progress</span>
+          <span className="card-label">{totalToLose}-lb Journey Progress</span>
           <span className="card-label-right">{progressPct.toFixed(0)}%</span>
         </div>
         <div className="progress-bar-track">
           <div className="progress-bar-fill" style={{ width: `${progressPct}%` }} />
         </div>
         <div className="progress-stats-row">
-          <div className="progress-stat"><strong>{USER_PROFILE.startWeight} lbs</strong><span>Start</span></div>
+          <div className="progress-stat"><strong>{startWeight} lbs</strong><span>Start</span></div>
           <div className="progress-stat highlight"><strong>{latestWeight} lbs</strong><span>Current</span></div>
-          <div className="progress-stat"><strong>{USER_PROFILE.targetWeight} lbs</strong><span>Goal</span></div>
+          <div className="progress-stat"><strong>{targetWeight} lbs</strong><span>Goal</span></div>
         </div>
         <p className="progress-sub">
-          {lostSoFar > 0 ? `${lostSoFar.toFixed(1)} lbs lost` : 'Log your first weight to start tracking'} · {(latestWeight - USER_PROFILE.targetWeight).toFixed(1)} lbs remaining
+          {lostSoFar > 0 ? `${lostSoFar.toFixed(1)} lbs lost` : 'Log your first weight to start tracking'} · {Math.max(0, latestWeight - targetWeight).toFixed(1)} lbs remaining
         </p>
       </div>
 
@@ -146,7 +152,7 @@ const Progress: React.FC = () => {
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                   <YAxis domain={['auto', 'auto']} tick={{ fontSize: 11 }} />
                   <Tooltip />
-                  <ReferenceLine y={USER_PROFILE.targetWeight} stroke="#3CAE63" strokeDasharray="6 3" label={{ value: 'Goal', position: 'right', fontSize: 11, fill: '#3CAE63' }} />
+                  <ReferenceLine y={targetWeight} stroke="#3CAE63" strokeDasharray="6 3" label={{ value: 'Goal', position: 'right', fontSize: 11, fill: '#3CAE63' }} />
                   <Line type="monotone" dataKey="weight" stroke="#0E0E55" strokeWidth={2} dot={{ r: 4 }} name="Weight (lbs)" />
                 </LineChart>
               </ResponsiveContainer>
