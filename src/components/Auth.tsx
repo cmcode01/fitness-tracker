@@ -35,8 +35,8 @@ const Auth: React.FC = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-logo">🌿</div>
-          <h1 className="auth-title">FitLife</h1>
+          <div className="auth-logo">🧬</div>
+          <h1 className="auth-title">BioMe</h1>
           <p className="auth-subtitle">Your personal fitness & nutrition tracker</p>
         </div>
 

@@ -35,8 +35,8 @@ const Navigation: React.FC<Props> = ({ activeTab, setActiveTab, onSignOut }) => 
     <>
       <nav className="top-nav">
         <div className="nav-brand">
-          <span className="nav-logo">🌿</span>
-          <span className="nav-title">FitLife</span>
+          <span className="nav-logo">🧬</span>
+          <span className="nav-title">BioMe</span>
         </div>
         <div className="nav-links">
           {NAV_ITEMS.map(item => (
